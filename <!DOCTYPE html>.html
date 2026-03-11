@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="ru" class="light">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GeoPulse - Modern Media AI</title>
+    <title>GeoPulse - Modern Media AI (LIVE)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Google Fonts: Inter (UI), Plus Jakarta Sans (Headings) & Merriweather (Logos) -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     
     <script>
@@ -40,19 +40,15 @@
         }
     </script>
     <style>
-        /* Базовые стили */
         body { margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s; }
-        
         .layout-container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
         .divider { border-bottom: 1px solid #e2e8f0; margin: 24px 0; }
         .dark .divider { border-bottom: 1px solid #333333; }
         
-        /* Сетка СМИ */
-        .news-grid { display: grid; grid-template-columns: 0.8fr 2.4fr 1fr; gap: 32px; margin-top: 24px; align-items: start; }
+        .news-grid { display: grid; grid-template-columns: 0.9fr 2.4fr 1fr; gap: 32px; margin-top: 24px; align-items: start; }
         @media (max-width: 1024px) { .news-grid { grid-template-columns: 0.8fr 1.5fr; } .col-right { display: none !important; } }
         @media (max-width: 768px) { .news-grid { grid-template-columns: 1fr; } .col-left { display: none !important; } }
 
-        /* Декорации */
         .main-heading { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; letter-spacing: -0.02em; }
         .ai-badge { background-color: #fef08a; color: #854d0e; padding: 3px 10px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; border-radius: 9999px; letter-spacing: 0.05em;}
         .dark .ai-badge { background-color: #422006; color: #fde047; }
@@ -60,11 +56,8 @@
         .live-item { border-left: 2px solid #e11d48; padding-left: 14px; margin-bottom: 18px; cursor: pointer; position: relative; }
         .live-item::before { content: ''; position: absolute; left: -5px; top: 2px; width: 8px; height: 8px; background-color: white; border: 2px solid #e11d48; border-radius: 50%; }
         .dark .live-item::before { background-color: #141414; }
-        
-        /* Изменение ховера: только подчеркивание */
         .live-item:hover .live-title { text-decoration: underline; text-underline-offset: 4px; }
         
-        /* Анимации загрузки */
         .feed-transition { transition: opacity 0.4s ease, transform 0.4s ease; }
         .feed-loading { opacity: 0; transform: translateY(10px); pointer-events: none; }
         
@@ -72,30 +65,26 @@
         .skeleton { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 200% 100%; animation: scan 1.5s infinite; border-radius: 12px;}
         .dark .skeleton { background: linear-gradient(90deg, #1e1e1e 25%, #333333 50%, #1e1e1e 75%); }
         
-        /* Скроллбар */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .dark ::-webkit-scrollbar-thumb { background: #475569; }
-
-        /* Убрать скроллбар для горизонтальных списков (кроссбраузерно) */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-white dark:bg-darkBg text-slate-900 dark:text-slate-100 antialiased min-h-screen flex flex-col font-sans relative">
 
-    <!-- Toast Notification -->
     <div id="toast" class="fixed top-24 left-1/2 transform -translate-x-1/2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-3 rounded-full shadow-2xl z-50 flex items-center gap-3 transition-all duration-300 opacity-0 pointer-events-none scale-95 font-semibold text-sm">
         <i class="fa-solid fa-satellite-dish animate-pulse text-brandBlue"></i>
-        <span id="toast-message">Смена локации...</span>
+        <span id="toast-message">Action...</span>
     </div>
 
-    <!-- Вспомогательная панель (Top Bar) -->
+    <!-- Вспомогательная панель -->
     <div class="relative z-[60] border-b border-slate-200 dark:border-darkBorder bg-slate-50 dark:bg-darkCard text-[0.75rem] font-medium text-slate-500 dark:text-slate-400 transition-colors">
         <div class="layout-container h-12 flex justify-between items-center">
             <div class="flex items-center gap-4">
-                <span id="date-display">Понедельник, 12 Августа</span>
+                <span id="date-display">Monday, August 12</span>
                 <span class="opacity-30">|</span>
                 <span id="weather-widget" class="flex items-center gap-1.5 font-semibold">
                     <i class="fa-solid fa-cloud"></i> <span id="weather-temp">+4°C</span> <span id="weather-city">Helsinki</span>
@@ -104,17 +93,13 @@
             <div class="flex items-center gap-5">
                 <span id="t-apply-author" class="cursor-pointer hover:underline underline-offset-4 uppercase tracking-wider hidden md:inline transition-all text-brandRed font-bold">Apply as Author</span>
                 <span class="cursor-pointer hover:underline underline-offset-4 uppercase tracking-wider hidden sm:inline transition-all">Newsletter</span>
-                
                 <span class="opacity-30 hidden sm:inline">|</span>
-                
                 <span id="t-login" class="cursor-pointer font-bold hover:underline underline-offset-4 transition-all uppercase tracking-wider text-slate-900 dark:text-white">Log in</span>
                 
-                <!-- Premium Theme Toggle -->
                 <button onclick="toggleTheme()" class="w-8 h-8 flex items-center justify-center rounded-full border border-slate-300 dark:border-darkBorder bg-white dark:bg-[#252525] hover:bg-slate-100 dark:hover:bg-[#333333] transition-all shadow-sm group ml-1">
                     <i id="theme-icon" class="fa-solid fa-moon text-[0.75rem] text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors"></i>
                 </button>
                 
-                <!-- Language selector -->
                 <div class="relative group cursor-pointer ml-1">
                     <span id="current-lang-label" class="hover:text-slate-900 dark:hover:text-white transition-colors uppercase font-bold bg-slate-200 dark:bg-[#333333] px-2.5 py-1.5 rounded text-[0.7rem] shadow-sm">EN</span>
                     <div class="absolute right-0 top-full mt-2 w-36 bg-white dark:bg-darkCard border border-slate-200 dark:border-darkBorder rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden text-left">
@@ -129,26 +114,18 @@
         </div>
     </div>
 
-    <!-- Главный Умный Header (Фиксированный) -->
+    <!-- Главный Умный Header -->
     <header id="main-header" class="sticky top-0 z-50 bg-white/95 dark:bg-darkBg/95 backdrop-blur-md border-b border-slate-200 dark:border-darkBorder transition-all duration-300">
         <div id="header-inner" class="layout-container py-4 sm:py-6 transition-all duration-300">
-            
-            <!-- ВЕРХНИЙ РЯД: Логотип, Гео-радиусы, Фокус-кнопка -->
             <div class="relative flex items-center justify-between w-full h-10">
-                
-                <!-- Логотип (Абсолют слева на ПК, относительный на мобильных) -->
                 <div id="main-logo" class="font-serif font-black text-3xl lg:text-4xl tracking-tight cursor-pointer transition-all duration-300 z-10 origin-left" onclick="closeArticle()">
                     GeoPulse<span class="text-brandRed">.</span>
                 </div>
                 
-                <!-- Идеально отцентрованное Гео-меню для ПК -->
                 <div class="hidden lg:flex absolute left-0 right-0 justify-center pointer-events-none">
-                    <div id="geo-tabs-desktop" class="pointer-events-auto flex items-center gap-8 text-[0.8rem] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
-                        <!-- Генерируются через JS -->
-                    </div>
+                    <div id="geo-tabs-desktop" class="pointer-events-auto flex items-center gap-8 text-[0.8rem] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400"></div>
                 </div>
 
-                <!-- Кнопка Фокуса (Абсолют справа на ПК) -->
                 <div id="focus-button-container" class="relative group z-10 transition-all duration-300 origin-right">
                     <button class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-2 hover:bg-slate-800 dark:hover:bg-slate-200 transition-all shadow-md hover:shadow-lg">
                         <i class="fa-solid fa-location-dot text-brandRed"></i>
@@ -156,51 +133,29 @@
                         <span class="sm:hidden">HELSINKI</span>
                         <i class="fa-solid fa-chevron-down text-[0.6rem] sm:text-xs ml-0.5 sm:ml-1 opacity-60"></i>
                     </button>
-                    <!-- Дропдаун -->
-                    <div class="absolute right-0 top-full mt-2 w-56 sm:w-64 bg-white dark:bg-darkCard border border-slate-200 dark:border-darkBorder rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[60] overflow-hidden">
-                        <div class="p-3 text-[0.65rem] text-slate-400 font-bold uppercase tracking-wider bg-slate-50 dark:bg-darkBorder/50">Select Focus Region</div>
+                    <!-- ВЫПАДАЮЩЕЕ МЕНЮ ГОРОДОВ С ФУНКЦИЕЙ ДОБАВЛЕНИЯ -->
+                    <div class="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-darkCard border border-slate-200 dark:border-darkBorder rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[60] overflow-hidden flex flex-col">
+                        <div class="p-3 text-[0.65rem] text-slate-400 font-bold uppercase tracking-wider bg-slate-50 dark:bg-darkBorder/50 flex-shrink-0">Select Focus Region</div>
                         
-                        <div id="city-opt-stockholm" onclick="changeLocation('stockholm')" class="city-option px-4 py-3 hover:bg-slate-50 dark:hover:bg-darkBorder text-sm cursor-pointer border-b border-slate-100 dark:border-darkBorder flex items-center justify-between transition-colors">
-                            <div class="flex items-center gap-3"><span class="text-xl">🇸🇪</span> Stockholm, Sweden</div>
-                            <i class="fa-solid fa-check text-brandBlue opacity-0 transition-opacity duration-300"></i>
+                        <!-- Список городов генерируется динамически -->
+                        <div id="city-dropdown-list" class="max-h-60 overflow-y-auto"></div>
+                        
+                        <!-- Блок добавления нового города -->
+                        <div class="p-3 border-t border-slate-200 dark:border-darkBorder bg-slate-50 dark:bg-darkBorder/30">
+                            <input type="text" id="new-city-input" placeholder="Add new city..." class="w-full bg-white dark:bg-darkBg border border-slate-200 dark:border-darkBorder rounded px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-brandBlue mb-2">
+                            <button onclick="addNewCity()" class="w-full bg-brandBlue text-white text-xs font-bold py-2 rounded hover:bg-blue-700 transition-colors" id="t-add-city-btn">+ Add City</button>
                         </div>
-                        
-                        <div id="city-opt-barcelona" onclick="changeLocation('barcelona')" class="city-option px-4 py-3 hover:bg-slate-50 dark:hover:bg-darkBorder text-sm cursor-pointer border-b border-slate-100 dark:border-darkBorder flex items-center justify-between transition-colors">
-                            <div class="flex items-center gap-3"><span class="text-xl">🇪🇸</span> Barcelona, Spain</div>
-                            <i class="fa-solid fa-check text-brandBlue opacity-0 transition-opacity duration-300"></i>
-                        </div>
-                        
-                        <div id="city-opt-helsinki" onclick="changeLocation('helsinki')" class="city-option px-4 py-3 hover:bg-slate-50 dark:hover:bg-darkBorder text-sm cursor-pointer border-b border-slate-100 dark:border-darkBorder flex items-center justify-between transition-colors">
-                            <div class="flex items-center gap-3"><span class="text-xl">🇫🇮</span> Helsinki, Finland</div>
-                            <i class="fa-solid fa-check text-brandBlue opacity-0 transition-opacity duration-300"></i>
-                        </div>
-                        
-                        <div id="city-opt-kokkola" onclick="changeLocation('kokkola')" class="city-option px-4 py-3 hover:bg-slate-50 dark:hover:bg-darkBorder text-sm cursor-pointer border-b border-slate-100 dark:border-darkBorder flex items-center justify-between transition-colors">
-                            <div class="flex items-center gap-3"><span class="text-xl">🇫🇮</span> Kokkola, Finland</div>
-                            <i class="fa-solid fa-check text-brandBlue opacity-0 transition-opacity duration-300"></i>
-                        </div>
-                        
-                        <div class="px-4 py-3 text-brandBlue text-xs cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/20 font-bold flex items-center gap-2 transition-colors"><i class="fa-solid fa-location-crosshairs"></i> Use GPS Auto-detect</div>
                     </div>
                 </div>
-
             </div>
 
-            <!-- Гео-меню для мобильных устройств -->
             <div id="geo-tabs-mobile-wrapper" class="flex lg:hidden overflow-x-auto hide-scrollbar mt-4">
-                <div id="geo-tabs-mobile" class="flex items-center gap-6 text-[0.75rem] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 w-max pb-1">
-                    <!-- Генерируются через JS -->
-                </div>
+                <div id="geo-tabs-mobile" class="flex items-center gap-6 text-[0.75rem] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 w-max pb-1"></div>
             </div>
 
-            <!-- НИЖНИЙ РЯД: Категории (Исчезают при скролле) -->
             <div id="topic-tabs-container" class="w-full overflow-x-auto hide-scrollbar mt-4 transition-all duration-300 opacity-100 max-h-[50px] transform-gpu origin-top">
                 <div class="flex lg:justify-center items-center w-max min-w-full gap-5 lg:gap-8 text-[0.65rem] lg:text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 pb-1">
-                    <div id="topic-tabs" class="flex items-center gap-5 lg:gap-8">
-                        <!-- Генерируются через JS -->
-                    </div>
-                    
-                    <!-- Кнопка "Другие" (Other) -->
+                    <div id="topic-tabs" class="flex items-center gap-5 lg:gap-8"></div>
                     <div class="cursor-pointer flex-shrink-0" onclick="openCategoriesView()">
                         <span class="text-[0.65rem] lg:text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 hover:underline underline-offset-4 transition-all flex items-center gap-1.5">
                             <span id="t-nav-other">Other</span>
@@ -209,59 +164,46 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </header>
 
     <!-- ОСНОВНОЙ КОНТЕНТ -->
     <main class="layout-container flex-grow pb-16 pt-6 relative">
-        
-        <!-- Сетка СМИ (3 колонки) -->
         <div id="news-grid" class="news-grid feed-transition">
             
-            <!-- Левая колонка (Live Pulse + PRO Widget) -->
+            <!-- Левая колонка -->
             <div class="col-left flex flex-col pr-5 sm:pr-6 border-r border-slate-200 dark:border-darkBorder">
-                <div class="border-b-2 border-slate-900 dark:border-white pb-3 mb-5">
-                    <div class="font-bold text-slate-900 dark:text-white uppercase text-[0.8rem] tracking-wider flex items-center gap-2 mb-1.5">
-                        <span class="w-1.5 h-1.5 bg-brandRed rounded-full animate-pulse"></span>
-                        <span id="t-live-pulse">Local Pulse (Latest)</span>
+                <div class="border-b-2 border-slate-900 dark:border-white pb-3 mb-5 flex flex-col items-start">
+                    <div class="font-bold text-slate-900 dark:text-white uppercase text-[0.8rem] tracking-wider flex items-center gap-2 mb-1">
+                        <span id="t-local-news">Local News</span>
                     </div>
-                    <!-- Подпись об ИИ кураторстве -->
-                    <div class="text-[0.6rem] text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1.5 uppercase tracking-wide">
+                    <div class="text-[0.6rem] text-slate-400 font-medium flex items-center gap-1.5 uppercase tracking-wide">
                         <i class="fa-solid fa-robot text-brandBlue opacity-70"></i>
-                        <span id="t-ai-collected">Curated by AI</span>
+                        <span id="t-ai-collected">Live Parsed by AI</span>
                     </div>
                 </div>
                 
-                <!-- Контейнер для ленты новостей -->
-                <div id="left-column-feed" class="flex flex-col">
-                    <!-- Заполняется JS -->
-                </div>
+                <div id="left-column-feed" class="flex flex-col gap-4"></div>
 
-                <!-- Блок B2B Подписки -->
                 <div class="bg-slate-50 dark:bg-darkCard rounded-2xl p-6 flex flex-col text-center mt-10 border border-slate-200 dark:border-darkBorder shadow-sm">
                     <span class="font-serif font-black tracking-tight text-xl mb-2 text-slate-900 dark:text-white">GeoPulse <span class="text-brandBlue font-sans italic">PRO</span></span>
                     <p id="t-pro-desc" class="text-[0.75rem] text-slate-600 dark:text-slate-400 mb-5 leading-relaxed">Detailed analytics of Northern Europe real estate and startup markets for investors.</p>
                     <button class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs py-2.5 rounded-xl hover:bg-brandBlue dark:hover:bg-brandBlue dark:hover:text-white transition-colors uppercase tracking-wider shadow-sm">Subscribe</button>
-                    <span class="text-[0.6rem] text-slate-400 mt-4 uppercase font-semibold tracking-wider">Sponsored / Ad</span>
+                    <span class="text-[0.6rem] text-slate-400 mt-4 uppercase font-semibold tracking-wider" id="t-dev-mode">Currently in development</span>
                 </div>
             </div>
 
-            <!-- Центральная колонка (Главные новости) -->
+            <!-- Центральная колонка -->
             <div class="col-center flex flex-col pr-8 border-r border-slate-200 dark:border-darkBorder">
-                <div id="center-column-feed" class="flex flex-col">
-                    <!-- Заполняется JS -->
-                </div>
+                <div id="center-column-feed" class="flex flex-col"></div>
             </div>
 
-            <!-- Правая колонка (Глобальное Agenda) -->
+            <!-- Правая колонка -->
             <div class="col-right flex flex-col pl-2">
                 <div class="font-bold text-lg border-b-2 border-slate-900 dark:border-white pb-3 mb-6 flex justify-between items-end">
                     <span id="t-global-title">Global Agenda</span>
                 </div>
-                <div id="global-news-feed" class="flex flex-col gap-5">
-                    <!-- Заполняется JS -->
-                </div>
+                <div id="global-news-feed" class="flex flex-col gap-5"></div>
             </div>
             
         </div>
@@ -279,7 +221,7 @@
                     <span id="article-time" class="text-xs text-slate-500 font-medium"></span>
                 </div>
                 <div class="bg-brandBlue/10 text-brandBlue dark:text-blue-400 text-[10px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 uppercase tracking-wide">
-                    <i class="fa-solid fa-robot"></i> <span id="article-translation"></span>
+                    <i class="fa-solid fa-robot"></i> <span id="article-translation">Live Parsed</span>
                 </div>
             </div>
             
@@ -290,35 +232,43 @@
                 <div class="absolute bottom-3 right-3 text-[10px] bg-slate-900/80 backdrop-blur-sm text-white px-3 py-1.5 rounded-md uppercase font-semibold tracking-wide">Source: <span id="article-source-img"></span></div>
             </div>
 
-            <!-- Инструменты ИИ -->
-            <div class="border border-slate-200 dark:border-darkBorder rounded-2xl p-4 mb-10 flex flex-wrap gap-3 items-center bg-slate-50/50 dark:bg-darkCard/50 shadow-sm">
-                <span class="text-xs font-bold text-slate-500 uppercase mr-2 tracking-wide flex items-center"><i class="fa-solid fa-wand-magic-sparkles mr-2 text-amber-500"></i> AI Tools:</span>
-                <button onclick="generateAISummary()" class="text-sm font-semibold bg-white dark:bg-darkBg border border-slate-200 dark:border-darkBorder px-4 py-2 rounded-xl hover:border-brandBlue dark:hover:border-brandBlue hover:text-brandBlue transition-all flex items-center gap-2 shadow-sm">
-                    ✨ <span id="t-ai-summary">AI Summary</span>
-                </button>
-                <button onclick="generateAIContext()" class="text-sm font-semibold bg-white dark:bg-darkBg border border-slate-200 dark:border-darkBorder px-4 py-2 rounded-xl hover:border-brandBlue dark:hover:border-brandBlue hover:text-brandBlue transition-all flex items-center gap-2 shadow-sm">
-                    📍 <span id="t-ai-context">Local Context</span>
-                </button>
+            <div class="border border-slate-200 dark:border-darkBorder rounded-2xl p-5 mb-10 flex flex-col gap-5 bg-slate-50/50 dark:bg-darkCard/50 shadow-sm">
+                <div class="flex flex-wrap items-center gap-3">
+                    <span class="text-xs font-bold text-slate-500 uppercase mr-2 tracking-wide flex items-center"><i class="fa-solid fa-wand-magic-sparkles mr-2 text-amber-500"></i> AI Tools:</span>
+                    <button onclick="generateAISummary()" class="text-sm font-semibold bg-white dark:bg-darkBg border border-slate-200 dark:border-darkBorder px-4 py-2 rounded-xl hover:border-brandBlue hover:text-brandBlue transition-all flex items-center gap-2 shadow-sm">
+                        ✨ <span id="t-ai-summary">AI Summary</span>
+                    </button>
+                    <button onclick="generateAIContext()" class="text-sm font-semibold bg-white dark:bg-darkBg border border-slate-200 dark:border-darkBorder px-4 py-2 rounded-xl hover:border-brandBlue hover:text-brandBlue transition-all flex items-center gap-2 shadow-sm">
+                        📍 <span id="t-ai-context">Local Context</span>
+                    </button>
+                    <button onclick="generateAISimplify()" class="text-sm font-semibold bg-white dark:bg-darkBg border border-slate-200 dark:border-darkBorder px-4 py-2 rounded-xl hover:border-brandBlue hover:text-brandBlue transition-all flex items-center gap-2 shadow-sm">
+                        👶 <span id="t-ai-simplify">Simplify</span>
+                    </button>
+                    <button onclick="generateAIFactCheck()" class="text-sm font-semibold bg-white dark:bg-darkBg border border-slate-200 dark:border-darkBorder px-4 py-2 rounded-xl hover:border-brandBlue hover:text-brandBlue transition-all flex items-center gap-2 shadow-sm">
+                        ⚖️ <span id="t-ai-factcheck">Fact Check</span>
+                    </button>
+                </div>
+                
+                <div class="flex items-center gap-2 pt-4 border-t border-slate-200 dark:border-darkBorder">
+                    <input type="text" id="ai-chat-input" placeholder="Ask AI a specific question about this article..." class="flex-grow bg-white dark:bg-darkBg border border-slate-200 dark:border-darkBorder px-4 py-2.5 rounded-xl text-sm outline-none focus:border-brandBlue transition-colors text-slate-800 dark:text-slate-200">
+                    <button onclick="generateAIChat()" class="text-sm font-semibold bg-brandBlue text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition-all shadow-sm flex items-center gap-2">
+                        ✨ <span id="t-ai-ask">Ask</span>
+                    </button>
+                </div>
             </div>
 
-            <!-- Блок вывода ИИ -->
             <div id="ai-result-box" class="hidden mb-10 p-6 rounded-2xl border-l-4 border-brandBlue bg-blue-50 dark:bg-darkBorder/40 shadow-sm">
                 <h4 class="font-bold text-sm mb-3 flex items-center gap-2 text-brandBlue uppercase tracking-wider">
                     <i class="fa-solid fa-robot"></i> <span id="ai-result-title">AI Insight</span>
                 </h4>
-                <div id="ai-result-content" class="text-[0.95rem] text-slate-800 dark:text-slate-200 space-y-3 leading-relaxed">
-                    <!-- Вывод AI -->
-                </div>
+                <div id="ai-result-content" class="text-[0.95rem] text-slate-800 dark:text-slate-200 space-y-3 leading-relaxed"></div>
             </div>
 
-            <!-- Текст статьи -->
-            <div id="article-content" class="font-sans font-normal text-lg text-slate-800 dark:text-slate-300 leading-relaxed space-y-6">
-                <!-- Контент -->
-            </div>
+            <div id="article-content" class="font-sans font-normal text-lg text-slate-800 dark:text-slate-300 leading-relaxed space-y-6"></div>
             
             <div class="mt-14 pt-8 border-t border-slate-200 dark:border-darkBorder flex justify-between items-center text-xs uppercase font-bold text-slate-500 tracking-wide">
-                <div>Original Source: <a href="#" id="article-source" target="_blank" class="text-slate-900 dark:text-white hover:underline transition-all underline decoration-slate-300 underline-offset-4"></a></div>
-                <a href="#" id="read-original-btn" target="_blank" class="bg-slate-100 dark:bg-darkCard px-5 py-2.5 rounded-full hover:bg-slate-200 dark:hover:bg-darkBorder transition-all text-slate-900 dark:text-white flex items-center">
+                <div>Original Source: <span id="article-source" class="text-slate-900 dark:text-white font-bold ml-1"></span></div>
+                <a href="#" id="read-original-btn" target="_blank" class="bg-slate-100 dark:bg-darkCard px-5 py-2.5 rounded-full hover:bg-slate-200 dark:hover:bg-darkBorder transition-all text-slate-900 dark:text-white flex items-center hidden">
                     <i class="fa-solid fa-external-link-alt mr-1.5"></i> <span id="t-read-original">Read</span>
                 </a>
             </div>
@@ -330,21 +280,16 @@
                 <button onclick="closeCategoriesView()" class="self-start text-sm text-slate-500 hover:underline underline-offset-4 flex items-center gap-2 transition-all mb-8 uppercase font-bold tracking-wider bg-slate-100 dark:bg-darkCard px-4 py-2 rounded-full">
                     <i class="fa-solid fa-arrow-left"></i> <span id="t-back-from-cat">Back to feed</span>
                 </button>
-                
                 <h1 class="main-heading text-4xl sm:text-5xl text-slate-900 dark:text-white mb-10 leading-tight border-b border-slate-200 dark:border-darkBorder pb-6" id="t-all-categories-title">All Categories</h1>
-                
-                <div id="full-categories-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
-                    <!-- Заполняется JS -->
-                </div>
+                <div id="full-categories-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12"></div>
             </div>
         </div>
 
     </main>
 
-    <!-- НОВЫЙ БЛОК: Выбор Авторов (В стиле BBC Must Watch) -->
+    <!-- БЛОК: Выбор Авторов -->
     <section id="authors-choice-section" class="bg-darkBg py-12 border-t border-darkBorder mt-auto">
         <div class="layout-container">
-            <!-- Заголовок блока и контролы -->
             <div class="flex items-center justify-between border-b border-darkBorder pb-4 mb-6">
                 <h2 class="text-white font-bold text-lg sm:text-xl uppercase tracking-widest flex items-center group cursor-pointer hover:underline underline-offset-8 transition-all">
                     <span id="t-authors-choice">GeoPulse Authors' Choice</span>
@@ -355,24 +300,14 @@
                     <button onclick="scrollAuthors(1)" class="w-8 h-8 rounded-full bg-darkCard hover:bg-slate-800 text-white flex items-center justify-center transition-colors shadow-sm"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                 </div>
             </div>
-            
-            <!-- Скроллируемый контейнер для карточек -->
-            <div id="authors-choice-feed" class="flex gap-6 overflow-x-auto hide-scrollbar snap-x pb-4 scroll-smooth">
-                <!-- Карточки генерируются через JS -->
-            </div>
+            <div id="authors-choice-feed" class="flex gap-6 overflow-x-auto hide-scrollbar snap-x pb-4 scroll-smooth"></div>
         </div>
     </section>
 
     <!-- Подвал (Footer) -->
     <footer class="border-t border-slate-200 dark:border-darkBorder bg-white dark:bg-darkBg pt-10 pb-16">
         <div class="layout-container flex flex-col gap-6 text-sm">
-            
-            <!-- Логотип подвала -->
-            <div class="font-serif font-black text-3xl tracking-tight text-slate-900 dark:text-white">
-                GeoPulse<span class="text-brandRed">.</span>
-            </div>
-            
-            <!-- Основная навигация -->
+            <div class="font-serif font-black text-3xl tracking-tight text-slate-900 dark:text-white">GeoPulse<span class="text-brandRed">.</span></div>
             <div class="flex flex-wrap gap-x-6 gap-y-3 font-bold text-slate-900 dark:text-white text-[0.9rem]">
                 <a href="#" class="hover:underline underline-offset-4 transition-all">Home</a>
                 <a href="#" class="hover:underline underline-offset-4 transition-all">News</a>
@@ -386,17 +321,7 @@
                 <a href="#" class="hover:underline underline-offset-4 transition-all">Live</a>
                 <a href="#" class="hover:underline underline-offset-4 transition-all">Weather</a>
             </div>
-            
-            <!-- Выбор языков подвала -->
-            <div class="mt-2">
-                <button class="bg-slate-100 dark:bg-darkCard border border-slate-200 dark:border-darkBorder px-5 py-2.5 font-bold text-slate-900 dark:text-white flex items-center gap-3 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
-                    GeoPulse in other languages <i class="fa-solid fa-caret-down"></i>
-                </button>
-            </div>
-            
             <div class="border-t border-slate-200 dark:border-darkBorder my-4"></div>
-            
-            <!-- Социальные сети -->
             <div class="flex items-center gap-5 font-bold text-slate-900 dark:text-white">
                 <span class="mr-2">Follow GeoPulse on:</span>
                 <a href="#" class="text-xl hover:opacity-75 transition-all"><i class="fa-brands fa-x-twitter"></i></a>
@@ -406,8 +331,6 @@
                 <a href="#" class="text-xl hover:opacity-75 transition-all"><i class="fa-brands fa-linkedin"></i></a>
                 <a href="#" class="text-xl hover:opacity-75 transition-all"><i class="fa-brands fa-youtube"></i></a>
             </div>
-            
-            <!-- Юридические ссылки -->
             <div class="flex flex-wrap gap-x-5 gap-y-3 text-xs text-slate-700 dark:text-slate-400 font-medium mt-2">
                 <a href="#" class="hover:underline underline-offset-4">Terms of Use</a>
                 <a href="#" class="hover:underline underline-offset-4">Subscription Terms</a>
@@ -419,8 +342,6 @@
                 <a href="#" class="hover:underline underline-offset-4">Advertise with us</a>
                 <a href="#" class="hover:underline underline-offset-4">Do not share or sell my info</a>
             </div>
-            
-            <!-- Копирайт -->
             <div class="text-xs text-slate-500 dark:text-slate-500 mt-2 leading-relaxed">
                 Copyright 2026 GeoPulse. All rights reserved. The GeoPulse is not responsible for the content of external sites. 
                 <a href="#" class="font-bold text-slate-900 dark:text-white hover:underline underline-offset-4 ml-1">Read about our approach to external linking.</a>
@@ -430,20 +351,36 @@
 
     <script>
         // --- СОСТОЯНИЕ ПРИЛОЖЕНИЯ ---
-        let currentCity = 'kokkola';
-        let currentLang = 'en';
+        let currentCity = 'helsinki';
+        let currentLang = 'en'; // Язык по умолчанию английский
         let isArticleView = false;
         let isCategoriesView = false;
         let currentArticleText = "";
         let currentScope = 'all';
 
-        // --- GEMINI API SETUP ---
-        const apiKey = "AIzaSyA873nU9F0a89f-Jn9wZYlAkkN0GFNs_1E"; 
+        // Базовые города по умолчанию
+        const defaultCities = ['stockholm', 'barcelona', 'helsinki', 'kokkola'];
+        // Пользовательские города из LocalStorage
+        let customCities = JSON.parse(localStorage.getItem('geoPulseCustomCities') || '[]');
 
+        const API_URL = 'http://localhost:3000/api/news'; 
+        let currentLiveArticles = []; 
+        let currentGlobalArticles = [];
+        let activeArticle = null;
+
+        // Оригинальные резервные ссылки для базовых городов
+        const fallbackRssUrls = {
+            helsinki: 'https://feeds.yle.fi/uutiset/v1/recent.rss?publisherIds=YLE_NEWS',
+            stockholm: 'https://api.sr.se/api/rss/program/2054',
+            barcelona: 'https://www.catalannews.com/news?format=feed&type=rss',
+            kokkola: 'https://feeds.yle.fi/uutiset/v1/recent.rss?publisherIds=YLE_UUTISET' 
+        };
+
+        const apiKey = ""; 
+        const LOCAL_USER_KEY = "AIzaSyA873nU9F0a89f-Jn9wZYlAkkN0GFNs_1E"; 
+        
         const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('date-display').innerText = new Date().toLocaleDateString('en-US', dateOptions);
 
-        // --- ЛОГИКА СКРОЛЛА ШАПКИ ---
         window.addEventListener('scroll', () => {
             const logo = document.getElementById('main-logo');
             const topicTabs = document.getElementById('topic-tabs-container');
@@ -451,419 +388,255 @@
             const headerInner = document.getElementById('header-inner');
 
             if (window.scrollY > 40) {
-                // Компактное состояние при прокрутке
                 logo.classList.replace('lg:text-4xl', 'lg:text-2xl');
                 logo.classList.replace('text-3xl', 'text-xl');
-                
                 topicTabs.style.maxHeight = '0px';
                 topicTabs.style.opacity = '0';
-                topicTabs.style.marginTop = '0px';
-                
                 focusBtn.style.opacity = '0';
                 focusBtn.style.pointerEvents = 'none';
-                focusBtn.style.transform = 'scale(0.95)';
-                
                 headerInner.classList.replace('sm:py-6', 'sm:py-3');
-                headerInner.classList.replace('py-4', 'py-2');
             } else {
-                // Полное состояние наверху страницы
                 logo.classList.replace('lg:text-2xl', 'lg:text-4xl');
                 logo.classList.replace('text-xl', 'text-3xl');
-                
                 topicTabs.style.maxHeight = '50px';
                 topicTabs.style.opacity = '1';
-                topicTabs.style.marginTop = '1rem';
-                
                 focusBtn.style.opacity = '1';
                 focusBtn.style.pointerEvents = 'auto';
-                focusBtn.style.transform = 'scale(1)';
-                
                 headerInner.classList.replace('sm:py-3', 'sm:py-6');
-                headerInner.classList.replace('py-2', 'py-4');
             }
         });
 
-        // --- СЛОВАРИ ПЕРЕВОДОВ ИНТЕРФЕЙСА ---
         const translations = {
             en: {
-                langLabel: "EN",
-                applyAuthor: "Apply as Author",
-                login: "Log in",
-                livePulse: "Local Pulse (Latest)",
-                aiCollected: "Curated by AI",
-                globalTitle: "Global Agenda",
-                translatedFrom: "AI Translated from",
-                backToFeed: "Back to Feed",
-                readOriginal: "Read Original",
-                proDesc: "Detailed analytics of Northern Europe real estate and startup markets for investors.",
-                parsingMsg: "Geo-parsing:",
-                aiSummary: "AI Summary",
-                aiContext: "Local Context",
-                aiLoading: "Analyzing...",
-                aiSummaryTitle: "AI Executive Summary",
-                aiContextTitle: "Local Context for Expats",
-                tabAll: "My Feed",
-                authorsChoice: "GeoPulse Authors' Choice",
-                navSport: "Sport",
-                navBusiness: "Business",
-                navTech: "Technology",
-                navHealth: "Health",
-                navCulture: "Culture",
-                navOther: "Other",
-                allCategories: "All Categories",
-                addLanguage: "+ Add Language",
-                addLangToast: "Language addition feature coming soon!"
+                langLabel: "EN", applyAuthor: "Apply as Author", login: "Log in", localNews: "Local News",
+                aiCollected: "Live Parsed by AI", globalTitle: "Global Agenda", translatedFrom: "Translated to",
+                backToFeed: "Back to Feed", readOriginal: "Read Original", proDesc: "Detailed analytics for investors.",
+                parsingMsg: "Live Parsing:", aiSummary: "AI Summary", aiContext: "Local Context", 
+                aiSimplify: "Simplify", aiFactCheck: "Fact Check", aiAsk: "Ask", aiChatPlaceholder: "Ask AI a specific question about this article...",
+                aiLoading: "Analyzing...", aiSummaryTitle: "AI Executive Summary", aiContextTitle: "Local Context for Expats", 
+                aiSimplifyTitle: "Simplified Version", aiFactCheckTitle: "Fact & Bias Analysis", aiChatTitle: "AI Answer",
+                tabAll: "My Feed", authorsChoice: "GeoPulse Authors' Choice", navSport: "Sport", navBusiness: "Business", navTech: "Technology",
+                navHealth: "Health", navCulture: "Culture", navOther: "Other", allCategories: "All Categories",
+                addLanguage: "+ Add Language", addLangToast: "Feature coming soon!", devMode: "Currently in development",
+                addCityPlaceholder: "Add new city...", addCityBtn: "+ Add City", cityAdded: "City Added!", cityRemoved: "City Removed", cityExists: "City already exists!"
             },
             fi: {
-                langLabel: "FI",
-                applyAuthor: "Hae kirjoittajaksi",
-                login: "Kirjaudu sisään",
-                livePulse: "Paikallinen Pulssi (Uusin)",
-                aiCollected: "Tekoälyn kuratoima",
-                globalTitle: "Maailman Tapahtumat",
-                translatedFrom: "Tekoälykäännös:",
-                backToFeed: "Takaisin Syötteeseen",
-                readOriginal: "Lue Alkuperäinen",
-                proDesc: "Yksityiskohtainen analytiikka Pohjois-Euroopan kiinteistö- ja startup-markkinoista.",
-                parsingMsg: "Geo-parsing:",
-                aiSummary: "Tekoälyn Tiivistelmä",
-                aiContext: "Paikallinen Konteksti",
-                aiLoading: "Analysoidaan...",
-                aiSummaryTitle: "Tekoälyn Tiivistelmä",
-                aiContextTitle: "Paikallinen Konteksti",
-                tabAll: "Oma Syöte",
-                authorsChoice: "GeoPulse-kirjoittajien valinta",
-                navSport: "Urheilu",
-                navBusiness: "Talous",
-                navTech: "Teknologia",
-                navHealth: "Terveys",
-                navCulture: "Kulttuuri",
-                navOther: "Muut",
-                allCategories: "Kaikki osastot",
-                addLanguage: "+ Lisää kieli",
-                addLangToast: "Kielen lisäys tulossa pian!"
+                langLabel: "FI", applyAuthor: "Hae kirjoittajaksi", login: "Kirjaudu", localNews: "Paikalliset Uutiset",
+                aiCollected: "Tekoälyn keräämä", globalTitle: "Maailman Tapahtumat", translatedFrom: "Käännetty kielelle",
+                backToFeed: "Takaisin", readOriginal: "Lue Alkuperäinen", proDesc: "Yksityiskohtainen analytiikka sijoittajille.",
+                parsingMsg: "Ladataan:", aiSummary: "Tiivistelmä", aiContext: "Konteksti", 
+                aiSimplify: "Yksinkertaista", aiFactCheck: "Faktantarkistus", aiAsk: "Kysy", aiChatPlaceholder: "Kysy tekoälyltä tästä artikkelista...",
+                aiLoading: "Analysoidaan...", aiSummaryTitle: "Tekoälyn Tiivistelmä", aiContextTitle: "Paikallinen Konteksti", 
+                aiSimplifyTitle: "Yksinkertaistettu versio", aiFactCheckTitle: "Fakta- ja puolueellisuusanalyysi", aiChatTitle: "Tekoälyn vastaus",
+                tabAll: "Oma Syöte", authorsChoice: "Kirjoittajien valinta", navSport: "Urheilu", navBusiness: "Talous", navTech: "Teknologia",
+                navHealth: "Terveys", navCulture: "Kulttuuri", navOther: "Muut", allCategories: "Kaikki osastot",
+                addLanguage: "+ Lisää kieli", addLangToast: "Tulossa pian!", devMode: "Kehitysvaiheessa",
+                addCityPlaceholder: "Lisää uusi kaupunki...", addCityBtn: "+ Lisää kaupunki", cityAdded: "Kaupunki lisätty!", cityRemoved: "Kaupunki poistettu", cityExists: "Kaupunki on jo listalla!"
             },
             ru: {
-                langLabel: "RU",
-                applyAuthor: "Стать автором",
-                login: "Войти",
-                livePulse: "Местный пульс (Свежее)",
-                aiCollected: "Собрано ИИ",
-                globalTitle: "Глобальная повестка",
-                translatedFrom: "ИИ перевод с",
-                backToFeed: "Назад к ленте",
-                readOriginal: "Оригинал",
-                proDesc: "Детальная аналитика рынка недвижимости и стартапов Северной Европы для инвесторов.",
-                parsingMsg: "Гео-парсинг:",
-                aiSummary: "ИИ Выжимка",
-                aiContext: "Местный контекст",
-                aiLoading: "Анализируем...",
-                aiSummaryTitle: "ИИ Краткая выжимка",
-                aiContextTitle: "Контекст для экспатов",
-                tabAll: "Моя лента",
-                authorsChoice: "Выбор авторов GeoPulse",
-                navSport: "Спорт",
-                navBusiness: "Бизнес",
-                navTech: "Технологии",
-                navHealth: "Здоровье",
-                navCulture: "Культура",
-                navOther: "Другое",
-                allCategories: "Все категории",
-                addLanguage: "+ Добавить язык",
-                addLangToast: "Функция добавления языка скоро появится!"
+                langLabel: "RU", applyAuthor: "Стать автором", login: "Войти", localNews: "Местные новости",
+                aiCollected: "Спарсено ИИ", globalTitle: "Глобальная повестка", translatedFrom: "Переведено на",
+                backToFeed: "Назад к ленте", readOriginal: "Оригинал новости", proDesc: "Детальная аналитика для инвесторов.",
+                parsingMsg: "Синхронизация RSS:", aiSummary: "ИИ Выжимка", aiContext: "Местный контекст", 
+                aiSimplify: "Упростить", aiFactCheck: "Проверка фактов", aiAsk: "Спросить", aiChatPlaceholder: "Задайте ИИ вопрос по этой статье...",
+                aiLoading: "Анализируем...", aiSummaryTitle: "ИИ Краткая выжимка", aiContextTitle: "Контекст для экспатов", 
+                aiSimplifyTitle: "Простое объяснение", aiFactCheckTitle: "Анализ фактов и предвзятости", aiChatTitle: "Ответ ИИ",
+                tabAll: "Моя лента", authorsChoice: "Выбор авторов GeoPulse", navSport: "Спорт", navBusiness: "Бизнес", navTech: "Технологии",
+                navHealth: "Здоровье", navCulture: "Культура", navOther: "Другое", allCategories: "Все категории",
+                addLanguage: "+ Добавить язык", addLangToast: "Скоро появится!", devMode: "В режиме разработки",
+                addCityPlaceholder: "Добавить город...", addCityBtn: "+ Добавить", cityAdded: "Город добавлен!", cityRemoved: "Город удален", cityExists: "Город уже есть в списке!"
             }
         };
 
-        // ДАННЫЕ ДЛЯ СТРАНИЦЫ "ВСЕ КАТЕГОРИИ"
         const extendedMenuData = {
-            en: [
-                { title: "World", subs: ["Politics", "Economy", "Conflicts", "Trade"] },
-                { title: "Science", subs: ["Space", "Physics", "Biology", "Environment"] },
-                { title: "Lifestyle", subs: ["Travel", "Food", "Fashion", "Guides"] },
-                { title: "Arts", subs: ["Movies", "Music", "Books", "Design"] },
-                { title: "Video", subs: ["Documentaries", "Shorts", "Interviews", "Live Events"] },
-                { title: "Audio", subs: ["Podcasts", "News Briefings", "Interviews"] }
-            ],
-            fi: [
-                { title: "Maailma", subs: ["Politiikka", "Talous", "Konfliktit", "Kauppa"] },
-                { title: "Tiede", subs: ["Avaruus", "Fysiikka", "Biologia", "Ympäristö"] },
-                { title: "Elämäntapa", subs: ["Matkailu", "Ruoka", "Muoti", "Oppaat"] },
-                { title: "Taide", subs: ["Elokuvat", "Musiikki", "Kirjat", "Muotoilu"] },
-                { title: "Video", subs: ["Dokumentit", "Lyhytelokuvat", "Haastattelut", "Live-tapahtumat"] },
-                { title: "Ääni", subs: ["Podcastit", "Uutiskatsaukset", "Haastattelut"] }
-            ],
-            ru: [
-                { title: "Мир", subs: ["Политика", "Экономика", "Конфликты", "Торговля"] },
-                { title: "Наука", subs: ["Космос", "Физика", "Биология", "Экология"] },
-                { title: "Стиль жизни", subs: ["Путешествия", "Еда", "Мода", "Гиды"] },
-                { title: "Искусство", subs: ["Кино", "Музыка", "Книги", "Дизайн"] },
-                { title: "Видео", subs: ["Документалистика", "Шортсы", "Интервью", "Прямые эфиры"] },
-                { title: "Аудио", subs: ["Подкасты", "Новостные сводки", "Интервью"] }
-            ]
+            en: [ { title: "World", subs: ["Politics", "Economy", "Conflicts"] }, { title: "Science", subs: ["Space", "Physics", "Biology"] } ],
+            fi: [ { title: "Maailma", subs: ["Politiikka", "Talous", "Konfliktit"] }, { title: "Tiede", subs: ["Avaruus", "Fysiikka", "Biologia"] } ],
+            ru: [ { title: "Мир", subs: ["Политика", "Экономика", "Конфликты"] }, { title: "Наука", subs: ["Космос", "Физика", "Биология"] } ]
         };
 
-        // --- БАЗА ДАННЫХ НОВОСТЕЙ ---
-        const globalNewsDatabase = {
-            en: [
-                { category: "Markets", title: "Asian markets rally as major tech giants report record Q3 earnings", time: "1 hour ago", image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=200", color: "text-emerald-600" },
-                { category: "US Politics", title: "Election aftermath: Global markets react to new trade policies", time: "2 hours ago", image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=200", color: "text-brandBlue" },
-                { category: "Climate", title: "Global summit reaches historic agreement on reducing ocean plastic by 2030", time: "3 hours ago", image: "https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=200", color: "text-teal-600" },
-                { category: "Space", title: "SpaceX successfully launches Mars mission with new engine", time: "4 hours ago", image: "https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?w=200", color: "text-purple-600" },
-                { category: "Tech", title: "Apple announces highly anticipated AR glasses, targeting next year release", time: "5 hours ago", image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=200", color: "text-gray-600" },
-                { category: "EU Regulation", title: "EU Parliament passes new AI regulation law: what will change for tech giants", time: "7 hours ago", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=200", color: "text-brandRed" }
-            ],
-            fi: [
-                { category: "Markkinat", title: "Aasian markkinat nousussa teknologiayhtiöiden ennätystulosten myötä", time: "1 tunti sitten", image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=200", color: "text-emerald-600" },
-                { category: "USA:n Politiikka", title: "Vaalituloksen jälkipyykki: Maailman markkinat reagoivat uusiin kauppapolitiikkoihin", time: "2 tuntia sitten", image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=200", color: "text-brandBlue" },
-                { category: "Ilmasto", title: "Huippukokous saavutti historiallisen sopimuksen muovijätteen vähentämiseksi", time: "3 tuntia sitten", image: "https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=200", color: "text-teal-600" },
-                { category: "Avaruus", title: "SpaceX laukaisi Mars-tehtävän onnistuneesti uudella moottorilla", time: "4 tuntia sitten", image: "https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?w=200", color: "text-purple-600" },
-                { category: "Teknologia", title: "Apple julkisti odotetut AR-lasinsa, julkaisu ensi vuonna", time: "5 tuntia sitten", image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=200", color: "text-gray-600" },
-                { category: "EU-sääntely", title: "Euroopan parlamentti hyväksyi uuden tekoälyasetuksen: mikä muuttuu teknologiajäteille", time: "7 tuntia sitten", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=200", color: "text-brandRed" }
-            ],
-            ru: [
-                { category: "Рынки", title: "Азиатские рынки растут на фоне рекордных отчетов ИТ-гигантов за 3 квартал", time: "1 час назад", image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=200", color: "text-emerald-600" },
-                { category: "Политика США", title: "Последствия выборов: мировые рынки реагируют на новую торговую политику", time: "2 часа назад", image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=200", color: "text-brandBlue" },
-                { category: "Климат", title: "Глобальный саммит достиг исторического соглашения по сокращению пластика в океане", time: "3 часа назад", image: "https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=200", color: "text-teal-600" },
-                { category: "Космос", title: "SpaceX успешно запускает миссию на Марс с новым двигателем", time: "4 часа назад", image: "https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?w=200", color: "text-purple-600" },
-                { category: "Технологии", title: "Apple анонсирует долгожданные AR-очки с релизом в следующем году", time: "5 часов назад", image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=200", color: "text-gray-600" },
-                { category: "Законы ЕС", title: "Парламент ЕС принял новый закон о регулировании ИИ: что изменится для бизнеса", time: "7 часов назад", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=200", color: "text-brandRed" }
-            ]
+        const globalNewsDatabaseFallback = {
+            en: [ { category: "Markets", title: "Asian markets rally as tech giants report record Q3 earnings", time: "1 hour ago", image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1600&q=90" } ],
+            fi: [ { category: "Markkinat", title: "Aasian markkinat nousussa teknologiayhtiöiden ennätystulosten myötä", time: "1 tunti sitten", image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1600&q=90" } ],
+            ru: [ { category: "Рынки", title: "Азиатские рынки растут на фоне рекордных отчетов ИТ-гигантов", time: "1 час назад", image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1600&q=90" } ]
         };
 
         const localNewsDatabase = {
             stockholm: {
                 weather: { temp: "+8°C", icon: "fa-cloud" },
-                originalLangName: { en: "Swedish", fi: "Ruotsi", ru: "Шведский" },
-                layers: { 
-                    en: { city: "Stockholm", region: "Stockholm County", country: "Sweden", area: "Nordics" }, 
-                    fi: { city: "Tukholma", region: "Tukholman lääni", country: "Ruotsi", area: "Pohjoismaat" },
-                    ru: { city: "Стокгольм", region: "Лен Стокгольм", country: "Швеция", area: "Сев. Европа" } 
-                },
-                en: {
-                    cityName: "Stockholm, Sweden",
-                    articles: [
-                        { scope: "city", category: "Infrastructure", title: "Slussen rebuilding phase 4 starts: massive traffic reroutes in center", excerpt: "Commuters face new routes as the Katarinavägen terminal moves. AI sentiment analysis indicates confusion among morning travelers.", fullText: "<p>The City of Stockholm has announced the start of phase 4 of the massive Slussen redevelopment project. Starting this Monday, the main bus terminal at Katarinavägen will be temporarily relocated, significantly altering routes for thousands of daily commuters.</p>", source: "SVT Nyheter", time: "20 mins ago", image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800" },
-                        { scope: "country", category: "Startups", title: "Northvolt secures €1B to expand Skellefteå gigafactory", excerpt: "The Swedish battery maker continues its massive expansion, cementing Stockholm's role as a green tech hub.", source: "Dagens Industri", time: "1 hour ago", image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800" },
-                        { scope: "city", category: "Tech", title: "Spotify expands central Stockholm headquarters, plans to hire 500 new engineers", excerpt: "The audio streaming giant reaffirms its commitment to its home city despite previous threats to relocate over housing shortages.", source: "Sveriges Radio", time: "2 hours ago", image: "https://images.unsplash.com/photo-1616469829581-73993eb86b02?w=800" },
-                        { scope: "country", category: "Politics", title: "Swedish parliament debates historic increase in defense spending", excerpt: "New military budget proposals aim to reach 2.5% of GDP in the coming years following NATO entry.", source: "Aftonbladet", time: "3 hours ago", image: "https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?w=800" },
-                        { scope: "region", category: "Transport", title: "New commuter train schedules for Stockholm County announced", excerpt: "SL introduces more frequent trains during rush hours on the Pendeltåg lines connecting the suburbs.", source: "SL Press", time: "4 hours ago", image: "https://images.unsplash.com/photo-1541427468627-a89a96e5ca1d?w=800" },
-                        { scope: "area", category: "Environment", title: "Baltic Sea clean-up initiative receives record €50M funding", excerpt: "A coalition of Nordic countries announces a massive effort to reduce agricultural runoff into the Baltic Sea.", source: "Nordic Council", time: "5 hours ago", image: "https://images.unsplash.com/photo-1498623116890-37e912163d5d?w=800" },
-                        { scope: "city", category: "Culture", title: "Local bakery wins national pastry award", excerpt: "The iconic cafe on Kungsgatan was recognized for its traditional princess cake.", source: "Mitt i Stockholm", time: "6 hours ago", image: "https://images.unsplash.com/photo-1517433670267-08bbd4be890f?w=800" }
-                    ]
-                },
-                fi: {
-                    cityName: "Tukholma, Ruotsi",
-                    articles: [
-                        { scope: "city", category: "Infrastruktuuri", title: "Slussenin uudelleenrakentamisen 4. vaihe alkaa: suuria liikennejärjestelyjä", excerpt: "Työmatkalaiset kohtaavat uusia reittejä Katarinavägenin terminaalin siirtyessä.", fullText: "<p>Tukholman kaupunki on ilmoittanut valtavan Slussenin uudistushankkeen 4. vaiheen alkamisesta.</p>", source: "SVT Nyheter", time: "20 min sitten", image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800" },
-                        { scope: "country", category: "Startupit", title: "Northvolt varmistaa miljardin euron rahoituksen", excerpt: "Ruotsalainen akkuvalmistaja jatkaa massiivista laajentumistaan.", source: "Dagens Industri", time: "1 tunti sitten", image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800" },
-                        { scope: "city", category: "Teknologia", title: "Spotify laajentaa pääkonttoriaan Tukholman keskustassa", excerpt: "Suoratoistojätti aikoo palkata 500 uutta insinööriä ja vahvistaa sitoutumistaan kotikaupunkiinsa.", source: "Sveriges Radio", time: "2 tuntia sitten", image: "https://images.unsplash.com/photo-1616469829581-73993eb86b02?w=800" },
-                        { scope: "country", category: "Politiikka", title: "Ruotsin parlamentti keskustelee historiallisesta puolustusbudjetin korotuksesta", excerpt: "Uudet sotilasbudjettiehdotukset pyrkivät 2,5 prosenttiin BKT:sta.", source: "Aftonbladet", time: "3 tuntia sitten", image: "https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?w=800" },
-                        { scope: "region", category: "Liikenne", title: "Tukholman läänin uudet lähijuna-aikataulut julkaistu", excerpt: "SL lisää junavuoroja ruuhka-aikoina Pendeltåg-linjoilla.", source: "SL Press", time: "4 tuntia sitten", image: "https://images.unsplash.com/photo-1541427468627-a89a96e5ca1d?w=800" },
-                        { scope: "area", category: "Ympäristö", title: "Itämeren puhdistusaloite saa ennätyksellisen 50 miljoonan euron rahoituksen", excerpt: "Pohjoismaiden liittouma ilmoittaa massiivisesta pyrkimyksestä vähentää maatalouden valumia.", source: "Nordic Council", time: "5 tuntia sitten", image: "https://images.unsplash.com/photo-1498623116890-37e912163d5d?w=800" },
-                        { scope: "city", category: "Kulttuuri", title: "Paikallinen leipomo voitti kansallisen palkinnon", excerpt: "Kungsgatanilla sijaitseva ikoninen kahvila palkittiin.", source: "Mitt i Stockholm", time: "6 tuntia sitten", image: "https://images.unsplash.com/photo-1517433670267-08bbd4be890f?w=800" }
-                    ]
-                },
-                ru: {
-                    cityName: "Стокгольм, Швеция",
-                    articles: [
-                        { scope: "city", category: "Инфраструктура", title: "Начинается 4-й этап реконструкции Slussen: массовые изменения маршрутов", excerpt: "Терминал Katarinavägen перенесен. Пассажиры сталкиваются с новыми маршрутами в центре города.", fullText: "<p>Мэрия Стокгольма объявила о начале 4-го этапа реконструкции Slussen. Главный автобусный терминал перенесен, что изменит маршруты для тысяч пассажиров.</p>", source: "SVT Nyheter", time: "20 мин назад", image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800" },
-                        { scope: "country", category: "Стартапы", title: "Northvolt привлекает €1 млрд для расширения гигафабрики в Шеллефтео", excerpt: "Шведский производитель аккумуляторов продолжает расширение, укрепляя роль страны в зеленых технологиях.", source: "Dagens Industri", time: "1 час назад", image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800" },
-                        { scope: "city", category: "Технологии", title: "Spotify расширяет офис в Стокгольме, планируя нанять 500 инженеров", excerpt: "Гигант аудиостриминга подтверждает свою преданность родному городу.", source: "Sveriges Radio", time: "2 часа назад", image: "https://images.unsplash.com/photo-1616469829581-73993eb86b02?w=800" },
-                        { scope: "country", category: "Политика", title: "Парламент Швеции обсуждает историческое увеличение расходов на оборону", excerpt: "Новые предложения по бюджету направлены на достижение 2,5% ВВП в ближайшие годы.", source: "Aftonbladet", time: "3 часа назад", image: "https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?w=800" },
-                        { scope: "region", category: "Транспорт", title: "Опубликовано новое расписание пригородных поездов в Стокгольме", excerpt: "SL вводит более частые поезда в часы пик на линиях Pendeltåg.", source: "SL Press", time: "4 часа назад", image: "https://images.unsplash.com/photo-1541427468627-a89a96e5ca1d?w=800" },
-                        { scope: "area", category: "Экология", title: "Инициатива по очистке Балтийского моря получила рекордные €50 млн", excerpt: "Коалиция северных стран объявляет о масштабных усилиях по снижению выбросов.", source: "Nordic Council", time: "5 часов назад", image: "https://images.unsplash.com/photo-1498623116890-37e912163d5d?w=800" },
-                        { scope: "city", category: "Культура", title: "Местная пекарня получила национальную премию", excerpt: "Знаковое кафе на Кунгсгатан было отмечено за их традиционный торт «Принцесса».", source: "Mitt i Stockholm", time: "6 часов назад", image: "https://images.unsplash.com/photo-1517433670267-08bbd4be890f?w=800" }
-                    ]
-                }
+                layers: { en: { city: "Stockholm", region: "Stockholm County", country: "Sweden", area: "Nordics" }, fi: { city: "Tukholma", region: "Tukholman lääni", country: "Ruotsi", area: "Pohjoismaat" }, ru: { city: "Стокгольм", region: "Лен Стокгольм", country: "Швеция", area: "Сев. Европа" } },
+                en: { cityName: "Stockholm, Sweden" }, fi: { cityName: "Tukholma, Ruotsi" }, ru: { cityName: "Стокгольм, Швеция" }
             },
             barcelona: {
                 weather: { temp: "+24°C", icon: "fa-sun" },
-                originalLangName: { en: "Catalan", fi: "Katalonia", ru: "Каталонский" },
-                layers: { 
-                    en: { city: "Barcelona", region: "Catalonia", country: "Spain", area: "South Europe" }, 
-                    fi: { city: "Barcelona", region: "Katalonia", country: "Espanja", area: "Etelä-Eurooppa" },
-                    ru: { city: "Барселона", region: "Каталония", country: "Испания", area: "Южная Европа" }
-                },
-                en: {
-                    cityName: "Barcelona, Spain",
-                    articles: [
-                        { scope: "city", category: "Protests", title: "Taxi strike brings central Barcelona to a standstill", excerpt: "Local unions blocked Gran Via. Metro is recommended. L1 and L3 trains are running with delays due to overload.", fullText: "<p>Thousands of taxi drivers have brought central Barcelona to a standstill this morning to protest ride-sharing apps.</p>", source: "La Vanguardia", time: "10 mins ago", image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800" },
-                        { scope: "country", category: "Economy", title: "Spain reports absolute record tourism revenue for Q3", excerpt: "International visitor spending exceeded expectations, greatly benefiting the Catalan economy despite local protests.", source: "El País", time: "1 hour ago", image: "https://images.unsplash.com/photo-1539037116277-4db20202d03d?w=800" },
-                        { scope: "region", category: "Environment", title: "Drought restrictions eased in Catalonia following heavy autumn rains", excerpt: "Recent rains have slightly recovered reservoir levels, allowing municipalities to ease water usage rules for residents and agriculture.", source: "El Nacional", time: "2 hours ago", image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800" },
-                        { scope: "city", category: "Tech", title: "Mobile World Congress extends Barcelona contract until 2032", excerpt: "The world's largest mobile technology exhibition will remain in the Catalan capital, securing thousands of jobs.", source: "TechCrunch Europe", time: "3 hours ago", image: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800" },
-                        { scope: "city", category: "Tourism", title: "City council limits cruise ships in port starting next month", excerpt: "New regulations aim to reduce emissions and overcrowding in the gothic quarter.", source: "Barcelona City Hall", time: "4 hours ago", image: "https://images.unsplash.com/photo-1548509925-0e7ea5eb4ee4?w=800" },
-                        { scope: "region", category: "Culture", title: "Sagrada Familia completion date officially set for 2026", excerpt: "The basilica's tallest tower will be finished just in time for the centenary of Antoni Gaudí's death.", source: "Catalan News", time: "6 hours ago", image: "https://images.unsplash.com/photo-1583422409516-2895a77ef244?w=800" }
-                    ]
-                },
-                fi: {
-                    cityName: "Barcelona, Espanja",
-                    articles: [
-                        { scope: "city", category: "Protestit", title: "Taksilakko pysäyttää Barcelonan keskustan", excerpt: "Paikalliset ammattiliitot tukkivat Gran Vian. Metron käyttöä suositellaan.", fullText: "<p>Tuhannet taksinkuljettajat ovat pysäyttäneet Barcelonan keskustan tänä aamuna.</p>", source: "La Vanguardia", time: "10 min sitten", image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800" },
-                        { scope: "country", category: "Talous", title: "Espanja raportoi kaikkien aikojen ennätyksestä matkailutuloissa", excerpt: "Kansainvälisten matkailijoiden kulutus ylitti odotukset ja hyödyttää suuresti Katalonian taloutta.", source: "El País", time: "1 tunti sitten", image: "https://images.unsplash.com/photo-1539037116277-4db20202d03d?w=800" },
-                        { scope: "region", category: "Ympäristö", title: "Kuivuusrajoituksia lievennetty Kataloniassa rankkasateiden jälkeen", excerpt: "Viimeaikaiset sateet ovat hieman palauttaneet tekojärvien vedenpintoja.", source: "El Nacional", time: "2 tuntia sitten", image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800" },
-                        { scope: "city", category: "Teknologia", title: "Mobile World Congress jatkaa sopimustaan Barcelonan kanssa vuoteen 2032", excerpt: "Maailman suurin mobiiliteknologian näyttely pysyy Katalonian pääkaupungissa.", source: "TechCrunch Europe", time: "3 tuntia sitten", image: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800" },
-                        { scope: "city", category: "Matkailu", title: "Kaupunginvaltuusto rajoittaa risteilyaluksia satamassa", excerpt: "Uusilla säännöksillä pyritään vähentämään päästöjä ja ruuhkia.", source: "Barcelona City Hall", time: "4 tuntia sitten", image: "https://images.unsplash.com/photo-1548509925-0e7ea5eb4ee4?w=800" },
-                        { scope: "region", category: "Kulttuuri", title: "Sagrada Familian valmistumispäivä on asetettu virallisesti vuoteen 2026", excerpt: "Basilikan korkein torni valmistuu juuri ajoissa Antoni Gaudín kuoleman 100-vuotispäiväksi.", source: "Catalan News", time: "6 tuntia sitten", image: "https://images.unsplash.com/photo-1583422409516-2895a77ef244?w=800" }
-                    ]
-                },
-                ru: {
-                    cityName: "Барселона, Испания",
-                    articles: [
-                        { scope: "city", category: "Протесты", title: "Забастовка таксистов парализовала центр Барселоны", excerpt: "Местные профсоюзы перекрыли Гран-Виа. Рекомендуется использовать метро.", fullText: "<p>Тысячи таксистов сегодня утром парализовали движение в центре Барселоны в знак протеста.</p>", source: "La Vanguardia", time: "10 мин назад", image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800" },
-                        { scope: "country", category: "Экономика", title: "Испания сообщает о рекордных доходах от туризма за 3 квартал", excerpt: "Траты иностранных посетителей превзошли ожидания, сильно поддержав экономику Каталонии.", source: "El País", time: "1 час назад", image: "https://images.unsplash.com/photo-1539037116277-4db20202d03d?w=800" },
-                        { scope: "region", category: "Экология", title: "Ограничения по засухе в Каталонии смягчены после сильных дождей", excerpt: "Недавние дожди немного восстановили уровни водохранилищ, что позволило ослабить правила использования воды.", source: "El Nacional", time: "2 часа назад", image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800" },
-                        { scope: "city", category: "Технологии", title: "Mobile World Congress продлевает контракт с Барселоной до 2032 года", excerpt: "Крупнейшая в мире выставка мобильных технологий останется в столице Каталонии.", source: "TechCrunch Europe", time: "3 часа назад", image: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800" },
-                        { scope: "city", category: "Туризм", title: "Городской совет ограничивает вход круизных лайнеров в порт", excerpt: "Новые правила направлены на снижение выбросов и переполненности Готического квартала.", source: "Barcelona City Hall", time: "4 часа назад", image: "https://images.unsplash.com/photo-1548509925-0e7ea5eb4ee4?w=800" },
-                        { scope: "region", category: "Культура", title: "Официально назначена дата завершения Саграда Фамилия - 2026 год", excerpt: "Самая высокая башня базилики будет закончена к столетию со дня смерти Антонио Гауди.", source: "Catalan News", time: "6 часов назад", image: "https://images.unsplash.com/photo-1583422409516-2895a77ef244?w=800" }
-                    ]
-                }
+                layers: { en: { city: "Barcelona", region: "Catalonia", country: "Spain", area: "South Europe" }, fi: { city: "Barcelona", region: "Katalonia", country: "Espanja", area: "Etelä-Eurooppa" }, ru: { city: "Барселона", region: "Каталония", country: "Испания", area: "Южная Европа" } },
+                en: { cityName: "Barcelona, Spain" }, fi: { cityName: "Barcelona, Espanja" }, ru: { cityName: "Барселона, Испания" }
             },
             helsinki: {
                 weather: { temp: "+4°C", icon: "fa-cloud" },
-                originalLangName: { en: "Finnish", fi: "Suomi", ru: "Финский" },
-                layers: { 
-                    en: { city: "Helsinki", region: "Uusimaa", country: "Finland", area: "Nordics" }, 
-                    fi: { city: "Helsinki", region: "Uusimaa", country: "Suomi", area: "Pohjoismaat" },
-                    ru: { city: "Хельсинки", region: "Уусимаа", country: "Финляндия", area: "Сев. Европа" }
-                },
-                en: {
-                    cityName: "Helsinki, Finland",
-                    articles: [
-                        { scope: "region", category: "City Planning", title: "Major changes coming to Uusimaa: New development project approved", excerpt: "The regional council has greenlit a massive infrastructure project that will reshape local traffic and housing over the next decade.", fullText: "<p>The regional council has officially approved the highly anticipated development project today. This initiative is expected to bring significant changes to the Uusimaa region, focusing on sustainable housing and modernized public transport.</p><p>Construction is set to begin next spring. Authorities advise residents that some temporary traffic reroutes will be necessary, but the long-term benefits for the local economy and daily commutes will be substantial.</p>", source: "Helsingin Sanomat", time: "5 mins ago", image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800", url: "https://www.hs.fi/alueet/art-2000011449776.html" },
-                        { scope: "city", category: "Tech", title: "Slush 2026: Main speakers for the Nordic's largest IT conference announced", excerpt: "This year's focus is on ClimateTech and quantum computing. Startup tickets sold out in a record 4 hours.", source: "Helsingin Sanomat", time: "15 mins ago", image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800", url: "https://www.hs.fi/helsinki/art-2000010000000.html" },
-                        { scope: "country", category: "Education", title: "Finland overhauls high school curriculum focusing on AI literacy", excerpt: "Starting next academic year, all Finnish high school students will be required to pass a basic course on artificial intelligence.", source: "Ministry of Education", time: "1 hour ago", image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800" },
-                        { scope: "country", category: "Politics", title: "Parliament approves new digital nomad visa", excerpt: "The new legislation makes it easier for non-EU remote workers to relocate to Finland for up to 2 years.", source: "Helsinki Times", time: "2 hours ago", image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800" },
-                        { scope: "region", category: "Transport", title: "HSL introduces new regional train zones", excerpt: "Changes will affect commuters traveling from Espoo and Vantaa starting next month.", source: "Yle", time: "3 hours ago", image: "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=800" },
-                        { scope: "city", category: "Real Estate", title: "New residential district planned for Jätkäsaari extension", excerpt: "The city council revealed blueprints for a new eco-friendly neighborhood holding up to 4,000 new residents.", source: "Helsinki Kaupunki", time: "4 hours ago", image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800" },
-                        { scope: "city", category: "Events", title: "Kallio Block Party dates confirmed for early August", excerpt: "The massive street festival will take over the Kallio district again. Traffic will be entirely rerouted.", source: "City of Helsinki", time: "5 hours ago", image: "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=800" },
-                        { scope: "area", category: "Economy", title: "Nordic cross-border trade reaches all-time high", excerpt: "New infrastructure projects boost economic cooperation in the region.", source: "Nordic Business", time: "6 hours ago", image: "https://images.unsplash.com/photo-1494412519320-aa613dfb7738?w=800" }
-                    ]
-                },
-                fi: {
-                    cityName: "Helsinki, Suomi",
-                    articles: [
-                        { scope: "region", category: "Kaupunkisuunnittelu", title: "Uudellemaalle tulossa suuria muutoksia: Uusi kehityshanke hyväksytty", excerpt: "Maakuntavaltuusto on näyttänyt vihreää valoa massiiviselle infrastruktuurihankkeelle, joka muokkaa liikennettä ja asumista seuraavan vuosikymmenen ajan.", fullText: "<p>Maakuntavaltuusto on tänään virallisesti hyväksynyt odotetun kehityshankkeen. Aloitteen odotetaan tuovan merkittäviä muutoksia Uudenmaan alueelle keskittyen kestävään asumiseen ja julkisen liikenteen nykyaikaistamiseen.</p><p>Rakennustyöt on määrä aloittaa ensi keväänä. Viranomaiset muistuttavat asukkaita, että tilapäiset liikennejärjestelyt ovat tarpeen, mutta pitkän aikavälin hyödyt paikallistaloudelle ja päivittäiselle työmatkaliikenteelle ovat huomattavat.</p>", source: "Helsingin Sanomat", time: "5 min sitten", image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800", url: "https://www.hs.fi/alueet/art-2000011449776.html" },
-                        { scope: "city", category: "Teknologia", title: "Slush 2026: Pohjoismaiden suurimman IT-konferenssin pääpuhujat julkistettu", excerpt: "Tänä vuonna painopiste on ClimateTechissä ja kvanttilaskennassa. Startup-liput myytiin loppuun ennätysajassa.", fullText: "<p>Slushin järjestäjät ovat julkistaneet vuoden 2026 pääpuhujansa. Tänä vuonna kantavina teemoina ovat ClimateTech-innovaatiot ja kvanttilaskennan kaupallistaminen.</p>", source: "Helsingin Sanomat", time: "15 min sitten", image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800", url: "https://www.hs.fi/helsinki/art-2000010000000.html" },
-                        { scope: "country", category: "Koulutus", title: "Suomi uudistaa lukion opetussuunnitelmaa painottaen tekoälylukutaitoa", excerpt: "Ensi lukuvuodesta alkaen kaikkien lukiolaisten on suoritettava tekoälyn peruskurssi.", source: "Opetusministeriö", time: "1 tunti sitten", image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800" },
-                        { scope: "country", category: "Politiikka", title: "Eduskunta hyväksyi uuden diginomadiviisumin", excerpt: "Uusi lainsäädäntö helpottaa EU:n ulkopuolisten etätyöntekijöiden muuttoa Suomeen jopa 2 vuodeksi.", source: "Helsinki Times", time: "2 tuntia sitten", image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800" },
-                        { scope: "region", category: "Liikenne", title: "HSL esittelee uudet lähiliikenteen vyöhykkeet", excerpt: "Muutokset koskevat Espoosta ja Vantaalta matkustavia ensi kuusta alkaen.", source: "Yle", time: "3 tuntia sitten", image: "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=800" },
-                        { scope: "city", category: "Kiinteistöt", title: "Uusi asuinalue suunnitteilla Jätkäsaaren laajennukseen", excerpt: "Kaupunginvaltuusto paljasti suunnitelmat uudesta ympäristöystävällisestä naapurustosta jopa 4 000 uudelle asukkaalle.", source: "Helsingin Kaupunki", time: "4 tuntia sitten", image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800" },
-                        { scope: "city", category: "Tapahtumat", title: "Kallio Block Partyn päivämäärät vahvistettu", excerpt: "Valtava katufestivaali valtaa jälleen Kallion kaupunginosan.", source: "Helsingin kaupunki", time: "5 tuntia sitten", image: "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=800" },
-                        { scope: "area", category: "Talous", title: "Pohjoismainen rajakauppa saavutti huipun", excerpt: "Uudet infrastruktuurihankkeet vauhdittavat yhteistyötä.", source: "Nordic Business", time: "6 tuntia sitten", image: "https://images.unsplash.com/photo-1494412519320-aa613dfb7738?w=800" }
-                    ]
-                },
-                ru: {
-                    cityName: "Хельсинки, Финляндия",
-                    articles: [
-                        { scope: "region", category: "Градостроительство", title: "Крупные изменения в Уусимаа: утвержден новый проект застройки", excerpt: "Региональный совет дал зеленый свет масштабному инфраструктурному проекту, который изменит местное движение в следующем десятилетии.", fullText: "<p>Региональный совет официально утвердил проект развития сегодня. Эта инициатива принесет значительные изменения в регион Уусимаа, сосредоточившись на экологичном жилье и современном транспорте.</p>", source: "Helsingin Sanomat", time: "5 мин назад", image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800", url: "https://www.hs.fi/alueet/art-2000011449776.html" },
-                        { scope: "city", category: "Технологии", title: "Slush 2026: Объявлены главные спикеры крупнейшей ИТ-конференции", excerpt: "В этом году акцент сделан на ClimateTech и квантовых вычислениях. Билеты для стартапов распроданы за 4 часа.", source: "Helsingin Sanomat", time: "15 мин назад", image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800", url: "https://www.hs.fi/helsinki/art-2000010000000.html" },
-                        { scope: "country", category: "Образование", title: "Финляндия обновляет школьную программу с акцентом на ИИ", excerpt: "Со следующего учебного года все старшеклассники должны будут сдать базовый курс по искусственному интеллекту.", source: "Ministry of Education", time: "1 час назад", image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800" },
-                        { scope: "country", category: "Политика", title: "Парламент утвердил визу для цифровых кочевников", excerpt: "Новый закон облегчает переезд в Финляндию для удаленных работников из стран, не входящих в ЕС.", source: "Helsinki Times", time: "2 часа назад", image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800" },
-                        { scope: "region", category: "Транспорт", title: "HSL вводит новые региональные тарифные зоны", excerpt: "Изменения затронут пассажиров, путешествующих из Эспоо и Вантаа, начиная со следующего месяца.", source: "Yle", time: "3 часа назад", image: "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=800" },
-                        { scope: "city", category: "Недвижимость", title: "Новый жилой район запланирован в Яткясаари", excerpt: "Городской совет представил чертежи нового экологичного района, рассчитанного на 4000 жителей.", source: "Helsinki Kaupunki", time: "4 часа назад", image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800" },
-                        { scope: "city", category: "События", title: "Подтверждены даты проведения Kallio Block Party", excerpt: "Масштабный уличный фестиваль снова захватит район Каллио. Движение транспорта будет полностью перенаправлено.", source: "City of Helsinki", time: "5 часов назад", image: "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=800" },
-                        { scope: "area", category: "Экономика", title: "Трансграничная торговля Северных стран достигла исторического максимума", excerpt: "Новые инфраструктурные проекты стимулируют экономическое сотрудничество в регионе.", source: "Nordic Business", time: "6 часов назад", image: "https://images.unsplash.com/photo-1494412519320-aa613dfb7738?w=800" }
-                    ]
-                }
+                layers: { en: { city: "Helsinki", region: "Uusimaa", country: "Finland", area: "Nordics" }, fi: { city: "Helsinki", region: "Uusimaa", country: "Suomi", area: "Pohjoismaat" }, ru: { city: "Хельсинки", region: "Уусимаа", country: "Финляндия", area: "Сев. Европа" } },
+                en: { cityName: "Helsinki, Finland" }, fi: { cityName: "Helsinki, Suomi" }, ru: { cityName: "Хельсинки, Финляндия" }
             },
             kokkola: {
                 weather: { temp: "-2°C", icon: "fa-snowflake" },
-                originalLangName: { en: "Finnish", fi: "Suomi", ru: "Финский" },
-                layers: { 
-                    en: { city: "Kokkola", region: "Central Ostrobothnia", country: "Finland", area: "Nordics" }, 
-                    fi: { city: "Kokkola", region: "Keski-Pohjanmaa", country: "Suomi", area: "Pohjoismaat" },
-                    ru: { city: "Коккола", region: "Центр. Остроботния", country: "Финляндия", area: "Сев. Европа" }
-                },
-                en: {
-                    cityName: "Kokkola, Finland",
-                    articles: [
-                        { scope: "city", category: "Infrastructure", title: "Piispanmäki school and daycare center to open its doors in August", excerpt: "Construction of the new multi-purpose educational building is nearing completion. The facilities will provide a modern learning environment for local children.", fullText: "<p>The massive Piispanmäki multi-purpose building project is reaching its conclusion. The facility will combine a school and a daycare center, serving the growing needs of the local community.</p><p>City officials confirm that operations will begin on schedule in August. The building emphasizes eco-friendly materials and modern pedagogical spatial design.</p>", source: "Kokkolan kaupunki", time: "2 hours ago", image: "https://images.unsplash.com/photo-1604134967494-8a9ed3adea0d?q=80&w=2874&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", url: "https://www.kokkola.fi/asuminen-ja-ymparisto/julkiset-rakennukset/piispanmaen-koulu-ja-paivakoti/" },
-                        { scope: "region", category: "Industry", title: "Major milestone for KIP: New battery material plant starts test production", excerpt: "Kokkola Industrial Park reinforces its status as Europe's green transition hub with the launch of the new lithium hydroxide facility.", source: "Keskipohjanmaa", time: "5 hours ago", image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800", url: "https://www.keskipohjanmaa.fi/" },
-                        { scope: "city", category: "Culture", title: "Kokkola Winter Accordion Festival kicks off with record international attendance", excerpt: "The annual 'Talviharmonikka' brings world-class musicians to the snowy streets of Central Ostrobothnia.", source: "Yle", time: "1 day ago", image: "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=800", url: "https://yle.fi/uutiset" },
-                        { scope: "city", category: "Real Estate", title: "City council approves new coastal residential zoning in Suntinsuu", excerpt: "The detailed plan allows for the construction of eco-friendly housing right by the sea, attracting new taxpayers.", source: "Kokkolan kaupunki", time: "2 days ago", image: "https://images.unsplash.com/photo-1449844908441-8829872d2607?w=800", url: "https://www.kokkola.fi/uutiset" },
-                        { scope: "region", category: "Transport", title: "Transport Agency announces €15M upgrade for Kokkola-Pietarsaari airport connections", excerpt: "Highway 8 access roads and public transport links will be heavily modernized to support local industry travel.", source: "Väylävirasto", time: "1 week ago", image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800", url: "https://vayla.fi/" },
-                        { scope: "area", category: "Energy", title: "Offshore wind farm project outside Kokkola coast moves to EIA phase", excerpt: "The massive energy project in the Bothnian Bay promises clean energy for the region's heavy industries.", source: "Yle Keski-Pohjanmaa", time: "2 weeks ago", image: "https://images.unsplash.com/photo-1532601224476-15c79f2f7a51?w=800", url: "https://yle.fi/" }
-                    ]
-                },
-                fi: {
-                    cityName: "Kokkola, Suomi",
-                    articles: [
-                        { scope: "city", category: "Infrastruktuuri", title: "Piispanmäen koulu ja päiväkoti aloittavat toimintansa elokuussa", excerpt: "Uuden monitoimitalon rakennustyöt ovat loppusuoralla. Tilat tarjoavat modernin oppimisympäristön paikallisille lapsille.", fullText: "<p>Massiivinen Piispanmäen monitoimitalohanke lähestyy päätöstään. Tila yhdistää koulun ja päiväkodin palvellen paikallisyhteisön kasvavia tarpeita.</p><p>Kaupungin viranomaiset vahvistavat, että toiminta alkaa aikataulun mukaisesti elokuussa. Rakennuksessa on painotettu ympäristöystävällisiä materiaaleja ja modernia pedagogista tilasuunnittelua.</p>", source: "Kokkolan kaupunki", time: "2 tuntia sitten", image: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800", url: "https://www.kokkola.fi/asuminen-ja-ymparisto/julkiset-rakennukset/piispanmaen-koulu-ja-paivakoti/" },
-                        { scope: "region", category: "Teollisuus", title: "KIP:n merkittävä virstanpylväs: Uusi akkumateriaalitehdas aloittaa testituotannon", excerpt: "Kokkola Industrial Park vahvistaa asemaansa Euroopan vihreän siirtymän keskuksena uuden litiumhydroksidilaitoksen myötä.", source: "Keskipohjanmaa", time: "5 tuntia sitten", image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800", url: "https://www.keskipohjanmaa.fi/" },
-                        { scope: "city", category: "Kulttuuri", title: "Kokkolan Talviharmonikka käynnistyy ennätysmäisellä kansainvälisellä osanotolla", excerpt: "Vuotuinen Talviharmonikka tuo maailmanluokan muusikot Keski-Pohjanmaan lumisille kaduille.", source: "Yle", time: "1 päivä sitten", image: "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=800", url: "https://yle.fi/uutiset" },
-                        { scope: "city", category: "Kiinteistöt", title: "Kaupunginvaltuusto hyväksyi Suntinsuun uuden merellisen asuinalueen kaavan", excerpt: "Asemakaava mahdollistaa ympäristöystävällisten asuntojen rakentamisen aivan meren rantaan.", source: "Kokkolan kaupunki", time: "2 päivää sitten", image: "https://images.unsplash.com/photo-1449844908441-8829872d2607?w=800", url: "https://www.kokkola.fi/uutiset" },
-                        { scope: "region", category: "Liikenne", title: "Väylävirasto ilmoittaa 15 miljoonan euron parannuksista Kruunupyyn lentoasemayhteyksiin", excerpt: "Kasitien liittymiä ja joukkoliikenneyhteyksiä modernisoidaan voimakkaasti paikallisen teollisuuden matkustustarpeisiin.", source: "Väylävirasto", time: "1 viikko sitten", image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800", url: "https://vayla.fi/" },
-                        { scope: "area", category: "Energia", title: "Kokkolan edustan merituulivoimahanke etenee YVA-vaiheeseen", excerpt: "Perämeren massiivinen energiahanke lupaa puhdasta energiaa alueen raskaan teollisuuden tarpeisiin.", source: "Yle Keski-Pohjanmaa", time: "2 viikkoa sitten", image: "https://images.unsplash.com/photo-1532601224476-15c79f2f7a51?w=800", url: "https://yle.fi/" }
-                    ]
-                },
-                ru: {
-                    cityName: "Коккола, Финляндия",
-                    articles: [
-                        { scope: "city", category: "Инфраструктура", title: "Школа и детский сад в Пииспанмяки начнут работу в августе", excerpt: "Строительство нового многофункционального образовательного здания близится к завершению. Помещения обеспечат современную среду обучения для местных детей.", fullText: "<p>Масштабный проект многофункционального здания Пииспанмяки подходит к концу. Объект объединит школу и детский сад, удовлетворяя растущие потребности местного сообщества.</p><p>Городские власти подтверждают, что работа начнется по графику в августе. При строительстве здания особое внимание уделялось экологически чистым материалам и современному педагогическому пространственному дизайну.</p>", source: "Kokkolan kaupunki", time: "2 часа назад", image: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800", url: "https://www.kokkola.fi/asuminen-ja-ymparisto/julkiset-rakennukset/piispanmaen-koulu-ja-paivakoti/" },
-                        { scope: "region", category: "Промышленность", title: "Важная веха для KIP: Новый завод аккумуляторных материалов начинает тестовое производство", excerpt: "Индустриальный парк Кокколы (KIP) укрепляет свой статус центра зеленого перехода Европы с запуском нового завода по производству гидроксида лития.", source: "Keskipohjanmaa", time: "5 часов назад", image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800", url: "https://www.keskipohjanmaa.fi/" },
-                        { scope: "city", category: "Культура", title: "Зимний фестиваль аккордеона стартует с рекордным международным участием", excerpt: "Ежегодный фестиваль «Talviharmonikka» приводит музыкантов мирового класса на заснеженные улицы Центральной Остроботнии.", source: "Yle", time: "1 день назад", image: "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=800", url: "https://yle.fi/uutiset" },
-                        { scope: "city", category: "Недвижимость", title: "Городской совет утвердил зонирование прибрежного жилого района в Сунтинсуу", excerpt: "Детальный план разрешает строительство экологичного жилья прямо у моря, привлекая новых налогоплательщиков.", source: "Kokkolan kaupunki", time: "2 дня назад", image: "https://images.unsplash.com/photo-1449844908441-8829872d2607?w=800", url: "https://www.kokkola.fi/uutiset" },
-                        { scope: "region", category: "Транспорт", title: "Дорожное агентство Финляндии выделяет €15 млн на модернизацию подъездов к аэропорту", excerpt: "Съезды с шоссе 8 и маршруты общественного транспорта будут серьезно обновлены для нужд местной промышленности.", source: "Väylävirasto", time: "1 неделю назад", image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800", url: "https://vayla.fi/" },
-                        { scope: "area", category: "Энергетика", title: "Проект морской ветроэлектростанции у побережья Кокколы переходит к оценке ОВОС", excerpt: "Масштабный энергетический проект в Ботническом заливе обещает чистую энергию для тяжелой промышленности региона.", source: "Yle Keski-Pohjanmaa", time: "2 недели назад", image: "https://images.unsplash.com/photo-1532601224476-15c79f2f7a51?w=800", url: "https://yle.fi/" }
-                    ]
-                }
+                layers: { en: { city: "Kokkola", region: "Central Ostrobothnia", country: "Finland", area: "Nordics" }, fi: { city: "Kokkola", region: "Keski-Pohjanmaa", country: "Suomi", area: "Pohjoismaat" }, ru: { city: "Коккола", region: "Центр. Остроботния", country: "Финляндия", area: "Сев. Европа" } },
+                en: { cityName: "Kokkola, Finland" }, fi: { cityName: "Kokkola, Suomi" }, ru: { cityName: "Коккола, Финляндия" }
             }
         };
 
-        // --- БАЗА ДАННЫХ ВЫБОРА АВТОРОВ ---
         const authorsChoiceDatabase = {
-            en: [
-                { category: "Marketing", loc: "Global", title: "What is Marketing? Core principles explained", excerpt: "An essential guide to understanding the modern digital marketing landscape.", fullText: "<p>Marketing is the process of getting people interested in your company's product or service. This happens through market research, analysis, and understanding your ideal customer's interests.</p><p>It pertains to all aspects of a business, including product development, distribution methods, sales, and advertising.</p>", source: "Renas Media", time: "Feb 23, 2026", image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800", url: "https://renasmedia.com/2026/02/23/what-is-marketing/" },
-                { category: "Media", loc: "Digital", title: "The Evolution of Digital Journalism", excerpt: "Insights from @renas_ on how new platforms and AI are reshaping the way we consume news.", fullText: "<p>The digital age has completely transformed journalism. From the printing press to the internet, and now to artificial intelligence, the way news is gathered, verified, and distributed is evolving faster than ever.</p><p>Follow @renas_ on Medium for more thoughts on media trends and digital workflows.</p>", source: "Medium (@renas_)", time: "2 days ago", image: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800", url: "https://medium.com/@renas_" },
-                { category: "Feature", loc: "Nordics", title: "The hidden cost of the green transition in remote areas", excerpt: "An in-depth look at how the battery industry is reshaping northern communities.", fullText: "<p>As the Nordics push for green energy, remote towns are seeing a massive influx of industrial projects. While this brings jobs, it also raises concerns about local ecosystems and traditional ways of life.</p>", source: "GeoPulse Authors", time: "1 week ago", image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600" },
-                { category: "Tech", loc: "Barcelona", title: "Inside the rebirth of the 22@ tech district", excerpt: "How the Catalan capital is attracting a new wave of global AI startups.", fullText: "<p>Barcelona's 22@ district was once an industrial wasteland. Today, it's a thriving hub for tech innovation, drawing talent from all over the world to work on cutting-edge AI and biotech.</p>", source: "GeoPulse Authors", time: "2 weeks ago", image: "https://images.unsplash.com/photo-1511527661048-7fe73d85e9a4?w=600" },
-                { category: "Society", loc: "Stockholm", title: "Why expats are increasingly choosing Sweden", excerpt: "Quality of life, nature, and tech opportunities are driving a new demographic shift.", fullText: "<p>Despite the long winters, expats are flocking to Stockholm. The combination of a robust welfare state, proximity to nature, and a booming tech scene makes it highly attractive.</p>", source: "GeoPulse Authors", time: "3 weeks ago", image: "https://images.unsplash.com/photo-1509356843151-383703115b06?w=600" }
-            ],
-            fi: [
-                { category: "Markkinointi", loc: "Globaali", title: "Mitä on markkinointi? Perusperiaatteet selitettynä", excerpt: "Olennainen opas modernin digitaalisen markkinoinnin ymmärtämiseen.", fullText: "<p>Markkinointi on prosessi, jolla ihmiset saadaan kiinnostumaan yrityksesi tuotteesta tai palvelusta. Tämä tapahtuu markkinatutkimuksen, analyysin ja ihanteellisen asiakkaasi kiinnostuksen kohteiden ymmärtämisen kautta.</p>", source: "Renas Media", time: "23. Helmikuuta 2026", image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800", url: "https://renasmedia.com/2026/02/23/what-is-marketing/" },
-                { category: "Media", loc: "Digitaalinen", title: "Digitaalisen journalismin evoluutio", excerpt: "Näkemyksiä @renas_ :lta siitä, kuinka uudet alustat ja tekoäly muokkaavat uutisten kulutusta.", fullText: "<p>Digitaaliaika on täysin muuttanut journalismia. Uutisten kerääminen, varmentaminen ja jakelu kehittyvät nopeammin kuin koskaan tekoälyn myötä.</p><p>Seuraa @renas_ Mediumissa saadaksesi lisää ajatuksia mediatrendeistä.</p>", source: "Medium (@renas_)", time: "2 päivää sitten", image: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800", url: "https://medium.com/@renas_" },
-                { category: "Erikoisartikkeli", loc: "Pohjoismaat", title: "Vihreän siirtymän piilokustannukset syrjäseuduilla", excerpt: "Syväkatsaus siihen, miten akkuteollisuus muokkaa pohjoisia yhteisöjä.", fullText: "<p>Pohjoismaiden pyrkiessä kohti vihreää energiaa, syrjäisille paikkakunnille virtaa valtavasti teollisuushankkeita. Vaikka tämä tuo työpaikkoja, se herättää myös huolta paikallisista ekosysteemeistä.</p>", source: "GeoPulse Authors", time: "1 viikko sitten", image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600" },
-                { category: "Teknologia", loc: "Barcelona", title: "Katsaus 22@-teknologia-alueen uudelleensyntymään", excerpt: "Kuinka Katalonian pääkaupunki houkuttelee uutta globaalien tekoäly-startupien aaltoa.", fullText: "<p>Barcelonan 22@-alue on nykyään kukoistava teknologiainnovaatioiden keskus, joka houkuttelee huippuosaajia kaikkialta maailmasta.</p>", source: "GeoPulse Authors", time: "2 viikkoa sitten", image: "https://images.unsplash.com/photo-1511527661048-7fe73d85e9a4?w=600" },
-                { category: "Yhteiskunta", loc: "Tukholma", title: "Miksi yhä useampi ulkosuomalainen valitsee Ruotsin", excerpt: "Elämänlaatu, luonto ja teknologia-alan mahdollisuudet ajavat uutta demografista muutosta.", fullText: "<p>Pitkistä talvista huolimatta ulkosuomalaiset kerääntyvät Tukholmaan. Vahvan hyvinvointivaltion, luonnonläheisyyden ja kukoistavan teknologia-alan yhdistelmä tekee siitä erittäin houkuttelevan.</p>", source: "GeoPulse Authors", time: "3 viikkoa sitten", image: "https://images.unsplash.com/photo-1509356843151-383703115b06?w=600" }
-            ],
-            ru: [
-                { category: "Маркетинг", loc: "Глобально", title: "Что такое маркетинг? Основные принципы", excerpt: "Незаменимое руководство по пониманию современного ландшафта цифрового маркетинга.", fullText: "<p>Маркетинг — это процесс привлечения внимания людей к продукту вашей компании. Это происходит через анализ и понимание интересов идеального клиента.</p>", source: "Renas Media", time: "23 Февраля 2026", image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800", url: "https://renasmedia.com/2026/02/23/what-is-marketing/" },
-                { category: "Медиа", loc: "Digital", title: "Эволюция цифровой журналистики", excerpt: "Мнение @renas_ о том, как новые платформы и ИИ меняют то, как мы потребляем новости.", fullText: "<p>Цифровая эпоха полностью преобразила журналистику. От печатного станка до интернета и ИИ.</p>", source: "Medium (@renas_)", time: "2 дня назад", image: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800", url: "https://medium.com/@renas_" },
-                { category: "Очерк", loc: "Сев. Европа", title: "Скрытая цена зеленого перехода в отдаленных районах", excerpt: "Глубокий взгляд на то, как индустрия аккумуляторов меняет северные общины.", fullText: "<p>По мере того, как Скандинавия переходит на зеленую энергию, отдаленные города переживают массовый приток промышленных проектов.</p>", source: "GeoPulse Authors", time: "1 неделю назад", image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600" },
-                { category: "Технологии", loc: "Барселона", title: "Изнутри: возрождение технологического района 22@", excerpt: "Как столица Каталонии привлекает новую волну глобальных стартапов в области ИИ.", fullText: "<p>Район 22@ в Барселоне когда-то был промышленной пустошью. Сегодня это процветающий центр технологических инноваций.</p>", source: "GeoPulse Authors", time: "2 недели назад", image: "https://images.unsplash.com/photo-1511527661048-7fe73d85e9a4?w=600" },
-                { category: "Общество", loc: "Стокгольм", title: "Почему экспаты все чаще выбирают Швецию", excerpt: "Качество жизни, природа и возможности в сфере ИТ стимулируют новый демографический сдвиг.", fullText: "<p>Несмотря на долгие зимы, экспаты стекаются в Стокгольм. Сочетание сильного социального государства и ИТ-бума делает его очень привлекательным.</p>", source: "GeoPulse Authors", time: "3 недели назад", image: "https://images.unsplash.com/photo-1509356843151-383703115b06?w=600" }
-            ]
+            en: [ { category: "Feature", loc: "Nordics", title: "The hidden cost of the green transition", excerpt: "An in-depth look at how the battery industry is reshaping northern communities.", source: "GeoPulse Authors", time: "1 week ago", image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1600&q=90" } ],
+            fi: [ { category: "Erikoisartikkeli", loc: "Pohjoismaat", title: "Vihreän siirtymän piilokustannukset", excerpt: "Syväkatsaus siihen, miten akkuteollisuus muokkaa pohjoisia yhteisöjä.", source: "GeoPulse Authors", time: "1 viikko sitten", image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1600&q=90" } ],
+            ru: [ { category: "Очерк", loc: "Сев. Европа", title: "Скрытая цена зеленого перехода", excerpt: "Глубокий взгляд на то, как индустрия аккумуляторов меняет северные общины.", source: "GeoPulse Authors", time: "1 неделю назад", image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1600&q=90" } ]
         };
 
-        // --- ЛОГИКА ИНТЕРФЕЙСА ---
-        
-        let currentArticleData = null;
+        // --- ИНИЦИАЛИЗАЦИЯ И РЕНДЕР ДИНАМИЧЕСКИХ ГОРОДОВ ---
+        function initCustomCities() {
+            customCities.forEach(cityObj => {
+                fallbackRssUrls[cityObj.key] = cityObj.rss;
+                localNewsDatabase[cityObj.key] = {
+                    weather: { temp: "—", icon: "fa-map-pin" },
+                    layers: { 
+                        en: { city: cityObj.name, region: "Region", country: "Country", area: "Global" },
+                        fi: { city: cityObj.name, region: "Alue", country: "Maa", area: "Globaali" },
+                        ru: { city: cityObj.name, region: "Регион", country: "Страна", area: "Мир" }
+                    },
+                    en: { cityName: cityObj.name }, fi: { cityName: cityObj.name }, ru: { cityName: cityObj.name }
+                };
+            });
+        }
+
+        function renderCityDropdown() {
+            const container = document.getElementById('city-dropdown-list');
+            let html = '';
+            const allCities = [...defaultCities, ...customCities.map(c => c.key)];
+
+            allCities.forEach(cityKey => {
+                const isCustom = customCities.some(c => c.key === cityKey);
+                const cityData = localNewsDatabase[cityKey];
+                const cityName = cityData[currentLang]?.cityName || cityData['en'].cityName;
+                
+                let icon = '📍';
+                if(cityKey === 'stockholm') icon = '🇸🇪';
+                else if(cityKey === 'barcelona') icon = '🇪🇸';
+                else if(cityKey === 'helsinki' || cityKey === 'kokkola') icon = '🇫🇮';
+
+                const checkClass = currentCity === cityKey ? 'opacity-100' : 'opacity-0';
+                const activeClass = currentCity === cityKey ? 'bg-slate-50 dark:bg-darkBorder font-bold text-brandBlue dark:text-blue-400' : 'hover:bg-slate-50 dark:hover:bg-darkBorder';
+
+                html += `
+                <div class="city-option px-4 py-3 ${activeClass} text-sm flex items-center justify-between transition-colors group">
+                    <div class="flex items-center gap-3 cursor-pointer flex-grow" onclick="changeLocation('${cityKey}')">
+                        <span class="text-xl">${icon}</span> 
+                        <span class="truncate">${cityName}</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        ${isCustom ? `<i class="fa-solid fa-trash text-slate-300 hover:text-brandRed cursor-pointer text-xs transition-colors" onclick="removeCity(event, '${cityKey}')" title="Remove city"></i>` : ''}
+                        <i class="fa-solid fa-check text-brandBlue ${checkClass} transition-opacity duration-300"></i>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+
+            const currentCityData = localNewsDatabase[currentCity];
+            const currentLangData = currentCityData[currentLang] || currentCityData['en'];
+            const shortName = currentLangData.cityName.split(',')[0].toUpperCase();
+            
+            const currentCityMainEl = document.getElementById('current-city-main');
+            if (currentCityMainEl) currentCityMainEl.innerText = `FOCUS: ${shortName}`;
+            
+            const currentCityMobileEl = document.querySelector('#focus-button-container > button > span.sm\\:hidden');
+            if (currentCityMobileEl) currentCityMobileEl.innerText = shortName;
+        }
+
+        function addNewCity() {
+            const input = document.getElementById('new-city-input');
+            const cityName = input.value.trim();
+            if (!cityName) return;
+
+            const key = cityName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+            
+            if (defaultCities.includes(key) || customCities.some(c => c.key === key)) {
+                showToast(translations[currentLang].cityExists);
+                return;
+            }
+
+            const newCityObj = {
+                key: key,
+                name: cityName,
+                rss: `https://news.google.com/rss/search?q=${encodeURIComponent(cityName + ' city news')}&hl=en-US&gl=US&ceid=US:en`
+            };
+
+            customCities.push(newCityObj);
+            localStorage.setItem('geoPulseCustomCities', JSON.stringify(customCities));
+            
+            initCustomCities(); 
+            input.value = '';
+            renderCityDropdown();
+            showToast(`${translations[currentLang].cityAdded} ${cityName}`);
+            changeLocation(key);
+        }
+
+        function removeCity(event, key) {
+            event.stopPropagation(); 
+            customCities = customCities.filter(c => c.key !== key);
+            localStorage.setItem('geoPulseCustomCities', JSON.stringify(customCities));
+            
+            delete localNewsDatabase[key];
+            delete fallbackRssUrls[key];
+            
+            showToast(translations[currentLang].cityRemoved);
+            
+            if (currentCity === key) {
+                changeLocation('helsinki'); 
+            } else {
+                renderCityDropdown();
+            }
+        }
+
+        function safeSetText(id, text) {
+            const el = document.getElementById(id);
+            if (el && text !== undefined) el.innerText = text;
+        }
+
+        function safeSetPlaceholder(id, text) {
+            const el = document.getElementById(id);
+            if (el && text !== undefined) el.placeholder = text;
+        }
 
         function updateStaticTexts() {
             const t = translations[currentLang];
-            document.getElementById('current-lang-label').innerText = t.langLabel;
-            document.getElementById('t-apply-author').innerText = t.applyAuthor;
-            document.getElementById('t-login').innerText = t.login;
-            document.getElementById('t-live-pulse').innerText = t.livePulse;
-            document.getElementById('t-ai-collected').innerText = t.aiCollected;
-            document.getElementById('t-global-title').innerText = t.globalTitle;
-            document.getElementById('t-pro-desc').innerText = t.proDesc;
-            document.getElementById('t-back').innerText = t.backToFeed;
-            document.getElementById('t-read-original').innerText = t.readOriginal;
-            document.getElementById('t-ai-summary').innerText = t.aiSummary;
-            document.getElementById('t-ai-context').innerText = t.aiContext;
-            document.getElementById('t-authors-choice').innerText = t.authorsChoice;
-            document.getElementById('t-nav-other').innerText = t.navOther;
-            document.getElementById('t-all-categories-title').innerText = t.allCategories;
-            document.getElementById('t-back-from-cat').innerText = t.backToFeed;
             
-            // Кнопка добавления языка переводится динамически
-            document.getElementById('t-add-language').innerText = t.addLanguage;
+            safeSetText('current-lang-label', t.langLabel);
+            safeSetText('t-apply-author', t.applyAuthor);
+            safeSetText('t-login', t.login);
+            safeSetText('t-local-news', t.localNews);
+            safeSetText('t-ai-collected', t.aiCollected);
+            safeSetText('t-global-title', t.globalTitle);
+            safeSetText('t-pro-desc', t.proDesc);
+            safeSetText('t-dev-mode', t.devMode);
+            safeSetText('t-back', t.backToFeed);
+            safeSetText('t-read-original', t.readOriginal);
+            safeSetText('t-ai-summary', t.aiSummary);
+            safeSetText('t-ai-context', t.aiContext);
+            safeSetText('t-ai-simplify', t.aiSimplify);
+            safeSetText('t-ai-factcheck', t.aiFactCheck);
+            safeSetText('t-ai-ask', t.aiAsk);
             
-            // Локализация даты: 'en-US', 'fi-FI' или 'ru-RU'
+            safeSetPlaceholder('ai-chat-input', t.aiChatPlaceholder);
+            
+            safeSetText('t-authors-choice', t.authorsChoice);
+            safeSetText('t-nav-other', t.navOther);
+            safeSetText('t-all-categories-title', t.allCategories);
+            safeSetText('t-back-from-cat', t.backToFeed);
+            safeSetText('t-add-language', t.addLanguage);
+            
+            safeSetPlaceholder('new-city-input', t.addCityPlaceholder);
+            safeSetText('t-add-city-btn', t.addCityBtn);
+
             const localeStr = currentLang === 'en' ? 'en-US' : (currentLang === 'fi' ? 'fi-FI' : 'ru-RU');
-            document.getElementById('date-display').innerText = new Date().toLocaleDateString(localeStr, dateOptions);
+            safeSetText('date-display', new Date().toLocaleDateString(localeStr, dateOptions));
             
+            renderCityDropdown();
             updateGeoTabsUI();
             renderFullCategories(); 
             renderAuthorsChoice(); 
@@ -879,17 +652,13 @@
 
         function updateThemeIcon(isDark) {
             const icon = document.getElementById('theme-icon');
-            if (icon) {
-                icon.className = isDark 
-                    ? 'fa-solid fa-moon text-[0.75rem] text-slate-400 group-hover:text-white transition-colors' 
-                    : 'fa-solid fa-sun text-[0.75rem] text-slate-600 group-hover:text-slate-900 transition-colors';
-            }
+            if (icon) icon.className = isDark ? 'fa-solid fa-moon text-[0.75rem] text-slate-400 group-hover:text-white transition-colors' : 'fa-solid fa-sun text-[0.75rem] text-slate-600 group-hover:text-slate-900 transition-colors';
         }
 
         function setLanguage(lang) {
             currentLang = lang;
             updateStaticTexts();
-            renderGlobalNews();
+            loadGlobalNews();
             if (isArticleView) closeArticle();
             if (isCategoriesView) closeCategoriesView();
             changeLocation(currentCity, true);
@@ -899,99 +668,61 @@
             if (currentScope === newScope) return;
             currentScope = newScope;
             updateGeoTabsUI();
-            renderFeedWithAnimation();
+            renderNewsGrid(); 
         }
 
         function updateGeoTabsUI() {
-            const geoTabsDesktop = document.getElementById('geo-tabs-desktop');
-            const geoTabsMobile = document.getElementById('geo-tabs-mobile');
-            const topicTabsContainer = document.getElementById('topic-tabs');
-            
             const layers = localNewsDatabase[currentCity].layers[currentLang];
             const t = translations[currentLang];
-            
-            const geoScopes = [
-                { id: 'all', label: t.tabAll },
-                { id: 'city', label: layers.city },
-                { id: 'region', label: layers.region },
-                { id: 'country', label: layers.country },
-                { id: 'area', label: layers.area }
-            ];
+            const geoScopes = [ { id: 'all', label: t.tabAll }, { id: 'city', label: layers.city }, { id: 'region', label: layers.region }, { id: 'country', label: layers.country }, { id: 'area', label: layers.area } ];
+            const topicScopes = [ { id: 'sport', label: t.navSport }, { id: 'business', label: t.navBusiness }, { id: 'tech', label: t.navTech }, { id: 'health', label: t.navHealth }, { id: 'culture', label: t.navCulture } ];
 
-            const topicScopes = [
-                { id: 'sport', label: t.navSport },
-                { id: 'business', label: t.navBusiness },
-                { id: 'tech', label: t.navTech },
-                { id: 'health', label: t.navHealth },
-                { id: 'culture', label: t.navCulture }
-            ];
-
-            // 1. Рендерим гео-вкладки
             let geoHtml = '';
             geoScopes.forEach(scope => {
                 const isActive = currentScope === scope.id;
-                const activeClass = isActive 
-                    ? 'text-slate-900 dark:text-white border-b-2 border-brandRed pb-[4px] transition-colors' 
-                    : 'hover:underline underline-offset-[6px] pb-[4px] cursor-pointer transition-all';
-                
+                const activeClass = isActive ? 'text-slate-900 dark:text-white border-b-2 border-brandRed pb-[4px] transition-colors' : 'hover:underline underline-offset-[6px] pb-[4px] cursor-pointer transition-all';
                 geoHtml += `<div onclick="setScope('${scope.id}')" class="${activeClass} whitespace-nowrap">${scope.label}</div>`;
             });
-            if(geoTabsDesktop) geoTabsDesktop.innerHTML = geoHtml;
-            if(geoTabsMobile) geoTabsMobile.innerHTML = geoHtml;
+            const d1 = document.getElementById('geo-tabs-desktop');
+            const d2 = document.getElementById('geo-tabs-mobile');
+            if (d1) d1.innerHTML = geoHtml;
+            if (d2) d2.innerHTML = geoHtml;
 
-            // 2. Рендерим тематические вкладки (Нижний ярус)
             let topicHtml = '';
             topicScopes.forEach(scope => {
                 const isActive = currentScope === scope.id;
-                const activeClass = isActive 
-                    ? 'text-slate-900 dark:text-white border-b-[1.5px] border-slate-900 dark:border-white pb-1 transition-colors' 
-                    : 'hover:underline underline-offset-8 pb-1 cursor-pointer transition-all';
-                
+                const activeClass = isActive ? 'text-slate-900 dark:text-white border-b-[1.5px] border-slate-900 dark:border-white pb-1 transition-colors' : 'hover:underline underline-offset-8 pb-1 cursor-pointer transition-all';
                 topicHtml += `<div onclick="setScope('${scope.id}')" class="${activeClass} whitespace-nowrap">${scope.label}</div>`;
             });
-            if(topicTabsContainer) topicTabsContainer.innerHTML = topicHtml;
+            const d3 = document.getElementById('topic-tabs');
+            if (d3) d3.innerHTML = topicHtml;
         }
 
-        // РЕНДЕРИНГ СТРАНИЦЫ ВСЕХ КАТЕГОРИЙ 
         function renderFullCategories() {
             const container = document.getElementById('full-categories-grid');
+            if (!container) return;
             const data = extendedMenuData[currentLang];
             let html = '';
-            
             data.forEach(col => {
-                html += `
-                    <div>
-                        <h4 class="text-slate-900 dark:text-white font-bold text-lg uppercase tracking-widest mb-4 border-b border-slate-200 dark:border-darkBorder pb-2">${col.title}</h4>
-                        <ul class="space-y-3 text-base text-slate-600 dark:text-slate-400 font-medium">
-                            ${col.subs.map(sub => `<li><a href="#" class="hover:underline underline-offset-4 hover:text-brandBlue transition-all block">${sub}</a></li>`).join('')}
-                        </ul>
-                    </div>
-                `;
+                html += `<div><h4 class="text-slate-900 dark:text-white font-bold text-lg uppercase tracking-widest mb-4 border-b border-slate-200 dark:border-darkBorder pb-2">${col.title}</h4>
+                        <ul class="space-y-3 text-base text-slate-600 dark:text-slate-400 font-medium">${col.subs.map(sub => `<li><a href="#" class="hover:underline underline-offset-4 hover:text-brandBlue transition-all block">${sub}</a></li>`).join('')}</ul></div>`;
             });
-            
             container.innerHTML = html;
         }
 
-        // ОТКРЫТИЕ И ЗАКРЫТИЕ СТРАНИЦЫ КАТЕГОРИЙ
         function openCategoriesView() {
             isCategoriesView = true;
-            
             if(isArticleView) closeArticle();
-
             const grid = document.getElementById('news-grid');
             const categoriesView = document.getElementById('categories-view');
-            
             const authorsSection = document.getElementById('authors-choice-section');
             if (authorsSection) authorsSection.style.display = 'none';
-
-            grid.classList.add('opacity-0', 'translate-y-4');
-            
+            if (grid) grid.classList.add('opacity-0', 'translate-y-4');
             setTimeout(() => {
-                grid.classList.add('hidden');
-                categoriesView.classList.remove('hidden');
-                
+                if (grid) grid.classList.add('hidden');
+                if (categoriesView) categoriesView.classList.remove('hidden');
                 requestAnimationFrame(() => {
-                    categoriesView.classList.remove('opacity-0', 'translate-y-4');
+                    if (categoriesView) categoriesView.classList.remove('opacity-0', 'translate-y-4');
                 });
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }, 400);
@@ -1001,44 +732,239 @@
             isCategoriesView = false;
             const grid = document.getElementById('news-grid');
             const categoriesView = document.getElementById('categories-view');
-
-            categoriesView.classList.add('opacity-0', 'translate-y-4');
-            
+            if (categoriesView) categoriesView.classList.add('opacity-0', 'translate-y-4');
             setTimeout(() => {
-                categoriesView.classList.add('hidden');
-                grid.classList.remove('hidden');
+                if (categoriesView) categoriesView.classList.add('hidden');
+                if (grid) grid.classList.remove('hidden');
                 const authorsSection = document.getElementById('authors-choice-section');
                 if (authorsSection) authorsSection.style.display = 'block';
-                
                 requestAnimationFrame(() => {
-                    grid.classList.remove('opacity-0', 'translate-y-4');
+                    if (grid) grid.classList.remove('opacity-0', 'translate-y-4');
                 });
             }, 400);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            if (!toast || !toastMsg) return;
+            toastMsg.innerText = message;
+            toast.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
+            toast.classList.add('opacity-100', 'scale-100');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'scale-100');
+                toast.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
+            }, 3000);
+        }
+
+        // --- УМНАЯ ИНТЕГРАЦИЯ С GEMINI API ---
+        async function fetchGemini(prompt, systemInstruction, isJson = false) {
+            const isLocalEnv = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            const finalKey = isLocalEnv ? LOCAL_USER_KEY : apiKey;
+            const model = isLocalEnv ? 'gemini-1.5-flash' : 'gemini-2.5-flash-preview-09-2025';
+            
+            let url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${finalKey}`;
+            
+            const payload = { contents: [{ parts: [{ text: prompt }] }] };
+            if (systemInstruction) payload.systemInstruction = { parts: [{ text: systemInstruction }] };
+            
+            if (isJson) {
+                payload.generationConfig = { responseMimeType: "application/json" };
+            }
+
+            let retries = 3; let delay = 1000;
+            for (let i = 0; i < retries; i++) {
+                try {
+                    let response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text || (isJson ? "[]" : "No response.");
+                } catch (error) {
+                    if (i === retries - 1) return (isJson ? "[]" : "Error connecting to AI.");
+                    await new Promise(res => setTimeout(res, delay)); delay *= 2;
+                }
+            }
+        }
+
+        // --- ПЕРЕВОД ПАЧКИ НОВОСТЕЙ В JSON ---
+        async function translateNewsBatch(articles, targetLangCode) {
+            const langMap = { 'en': 'English', 'fi': 'Finnish', 'ru': 'Russian' };
+            const targetLang = langMap[targetLangCode];
+
+            const payloadToTranslate = articles.map(a => ({
+                category: a.category || "News",
+                title: a.title,
+                excerpt: a.excerpt || "",
+                fullText: (a.fullText || "").substring(0, 1500) 
+            }));
+
+            const prompt = `Translate the following JSON array of news articles to ${targetLang}. 
+            Return ONLY a valid JSON array matching the exact same structure (category, title, excerpt, fullText) without any markdown formatting.
+            JSON to translate:
+            ${JSON.stringify(payloadToTranslate)}`;
+
+            try {
+                const responseText = await fetchGemini(prompt, "You are a professional translator. Return ONLY a valid JSON array of objects.", true);
+                
+                let cleanResponse = responseText.replace(/```json/gi, '').replace(/```/g, '').trim();
+                const firstBracket = cleanResponse.indexOf('[');
+                const lastBracket = cleanResponse.lastIndexOf(']');
+                if (firstBracket !== -1 && lastBracket !== -1) {
+                    cleanResponse = cleanResponse.substring(firstBracket, lastBracket + 1);
+                }
+
+                const translatedData = JSON.parse(cleanResponse);
+
+                return articles.map((art, i) => {
+                    if (translatedData[i]) {
+                        return {
+                            ...art,
+                            category: translatedData[i].category || art.category,
+                            title: translatedData[i].title || art.title,
+                            excerpt: translatedData[i].excerpt || art.excerpt,
+                            fullText: translatedData[i].fullText || art.fullText,
+                            translated: true
+                        };
+                    }
+                    return art;
+                });
+            } catch (e) {
+                console.error("Translation batch failed", e);
+                return articles; 
+            }
+        }
+
+        // --- ЗАГРУЗКА GLOBAL NEWS ---
+        async function loadGlobalNews() {
+            const feedContainer = document.getElementById('global-news-feed');
+            if (feedContainer) feedContainer.innerHTML = `<div class="skeleton h-20 w-full mb-3 rounded-lg"></div><div class="skeleton h-20 w-full mb-3 rounded-lg"></div>`;
+            
+            try {
+                const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://rss.nytimes.com/services/xml/rss/nyt/World.xml')}`);
+                const data = await response.json();
+                if (data.items) {
+                    currentGlobalArticles = data.items.slice(0, 6).map(item => {
+                        let imageUrl = item.enclosure?.link || item.thumbnail;
+                        if (!imageUrl || imageUrl.trim() === '') {
+                            const imgMatch = (item.content || item.description || '').match(/<img[^>]+src=["']([^"']+)["']/i);
+                            if (imgMatch) imageUrl = imgMatch[1];
+                            else imageUrl = 'https://images.unsplash.com/photo-1529243856184-fd5465488984?w=1600&q=90'; 
+                        }
+                        return {
+                            category: "World", title: item.title,
+                            excerpt: (item.description || '').replace(/<[^>]*>?/gm, '').substring(0, 100) + '...',
+                            fullText: item.content || item.description,
+                            source: data.feed.title || "NYT World",
+                            time: new Date(item.pubDate.replace(' ', 'T')).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                            image: imageUrl, url: item.link
+                        };
+                    });
+
+                    if (currentLang !== 'en') {
+                        currentGlobalArticles = await translateNewsBatch(currentGlobalArticles, currentLang);
+                    }
+                    renderGlobalNewsGrid();
+                }
+            } catch (e) {
+                currentGlobalArticles = globalNewsDatabaseFallback[currentLang] || globalNewsDatabaseFallback['en'];
+                renderGlobalNewsGrid();
+            }
+        }
+        
+        function renderGlobalNewsGrid() {
+            const feed = document.getElementById('global-news-feed');
+            if (!feed) return;
+            let html = '';
+            currentGlobalArticles.forEach((article, index) => {
+                html += `<div class="flex gap-4 items-center pb-5 border-b border-slate-200 dark:border-darkBorder cursor-pointer group" onclick="openArticle(${index}, 'global')">
+                        <div class="w-20 h-16 bg-slate-100 dark:bg-darkBorder flex-shrink-0 overflow-hidden rounded-lg shadow-sm">
+                            <img src="${article.image}" onerror="this.src='https://images.unsplash.com/photo-1529243856184-fd5465488984?w=1200&q=90'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <span class="text-[0.65rem] font-bold uppercase tracking-widest text-brandBlue">${article.category}</span>
+                            <h4 class="main-heading text-[0.85rem] leading-snug group-hover:underline underline-offset-4 transition-all text-slate-900 dark:text-white line-clamp-2">${article.title}</h4>
+                        </div></div>`;
+            });
+            feed.innerHTML = html;
+        }
+
+        // --- ПАРСИНГ LIVE НОВОСТЕЙ С МГНОВЕННЫМ ОТОБРАЖЕНИЕМ И ФОНОВЫМ ПЕРЕВОДОМ ---
+        async function fetchLiveNews(cityKey) {
+            renderSkeletons(); 
+            let fetchedArticles = [];
+            
+            try {
+                const response = await fetch(`${API_URL}/${cityKey}`);
+                if (!response.ok) throw new Error('Сервер ответил ошибкой');
+                const data = await response.json();
+                if (data.articles && data.articles.length > 0) {
+                    fetchedArticles = data.articles;
+                } else throw new Error('RSS лента пуста');
+            } catch (error) {
+                try {
+                    const fallbackUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(fallbackRssUrls[cityKey])}`;
+                    const fbResponse = await fetch(fallbackUrl);
+                    const fbData = await fbResponse.json();
+                    
+                    if (fbData.items && fbData.items.length > 0) {
+                        fetchedArticles = fbData.items.slice(0, 10).map(item => {
+                            let imageUrl = item.enclosure?.link || item.thumbnail;
+                            if (!imageUrl) {
+                                const imgMatch = (item.content || item.description || '').match(/<img[^>]+src=["']([^"']+)["']/i);
+                                if (imgMatch) imageUrl = imgMatch[1];
+                                else imageUrl = "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1600&q=90";
+                            }
+                            return {
+                                scope: "city", category: "News",
+                                title: item.title,
+                                excerpt: (item.description || '').replace(/<[^>]*>?/gm, '').substring(0, 150) + '...',
+                                fullText: item.content || item.description,
+                                source: fbData.feed?.title || "Local Media",
+                                time: new Date((item.pubDate||'').replace(' ', 'T')).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                                image: imageUrl, url: item.link
+                            };
+                        });
+                    } else throw new Error('Резервный API не вернул данных');
+                } catch (fallbackError) {
+                    fetchedArticles = [{
+                        scope: "city", category: "Connection Error", 
+                        title: "⚠️ Не удалось получить новости",
+                        excerpt: "Запустите локальный сервер (node server.js) или добавленный город пока не имеет новостей в Google News.", 
+                        fullText: "Please start your backend server on port 3000.",
+                        source: "System", time: "Just now", 
+                        image: "https://images.unsplash.com/photo-1594322436404-5a0526db4d13?w=1600&q=90"
+                    }];
+                }
+            }
+            
+            currentLiveArticles = fetchedArticles;
+            renderNewsGrid();
+            
+            if (currentLang !== 'en' && fetchedArticles.length > 0 && fetchedArticles[0].category !== "Connection Error") {
+                translateNewsBatch(fetchedArticles, currentLang).then(translated => {
+                    currentLiveArticles = translated;
+                    renderNewsGrid(); 
+                }).catch(e => {
+                    console.log('Background translation failed');
+                });
+            }
         }
 
         function changeLocation(cityKey, skipAnimation = false) {
             currentCity = cityKey;
             currentScope = 'all';
-            const cityData = localNewsDatabase[cityKey];
-            const langData = cityData[currentLang];
             
-            document.getElementById('current-city-main').innerText = `FOCUS: ${langData.cityName.split(',')[0].toUpperCase()}`;
-            document.getElementById('weather-city').innerText = langData.cityName.split(',')[0];
-            document.getElementById('weather-temp').innerText = cityData.weather.temp;
-            document.querySelector('#weather-widget i').className = `fa-solid ${cityData.weather.icon}`;
+            const cityData = localNewsDatabase[cityKey];
+            const langData = cityData[currentLang] || cityData['en'];
+            
+            const weatherCity = document.getElementById('weather-city');
+            const weatherTemp = document.getElementById('weather-temp');
+            const weatherIcon = document.querySelector('#weather-widget i');
+            if (weatherCity) weatherCity.innerText = langData.cityName.split(',')[0];
+            if (weatherTemp) weatherTemp.innerText = cityData.weather.temp;
+            if (weatherIcon) weatherIcon.className = `fa-solid ${cityData.weather.icon}`;
 
-            // Обновляем визуальное выделение активного города в выпадающем меню
-            document.querySelectorAll('.city-option').forEach(opt => {
-                const checkIcon = opt.querySelector('.fa-check');
-                if (opt.id === `city-opt-${cityKey}`) {
-                    opt.classList.add('bg-slate-50', 'dark:bg-darkBorder', 'font-bold', 'text-brandBlue', 'dark:text-blue-400');
-                    if(checkIcon) checkIcon.classList.replace('opacity-0', 'opacity-100');
-                } else {
-                    opt.classList.remove('bg-slate-50', 'dark:bg-darkBorder', 'font-bold', 'text-brandBlue', 'dark:text-blue-400');
-                    if(checkIcon) checkIcon.classList.replace('opacity-100', 'opacity-0');
-                }
-            });
-
+            renderCityDropdown(); 
             updateGeoTabsUI();
 
             if(!skipAnimation) showToast(`${translations[currentLang].parsingMsg} ${langData.cityName.split(',')[0]}...`);
@@ -1048,71 +974,55 @@
             renderFeedWithAnimation();
         }
 
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-message').innerText = message;
-            toast.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
-            toast.classList.add('opacity-100', 'scale-100');
-            setTimeout(() => {
-                toast.classList.remove('opacity-100', 'scale-100');
-                toast.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
-            }, 3000);
-        }
-
-        // --- РЕНДЕРИНГ ГАЗЕТНОЙ СЕТКИ ---
-
         function renderFeedWithAnimation() {
             const grid = document.getElementById('news-grid');
-            grid.classList.add('feed-loading');
+            if (grid) grid.classList.add('feed-loading');
             
             setTimeout(() => {
-                renderSkeletons();
-                grid.classList.remove('feed-loading');
+                fetchLiveNews(currentCity);
                 setTimeout(() => {
-                    grid.classList.add('feed-loading');
-                    setTimeout(() => {
-                        renderNewsGrid();
-                        grid.classList.remove('feed-loading');
-                    }, 300);
+                    if (grid) grid.classList.remove('feed-loading');
                 }, 400);
             }, 200);
         }
 
         function renderNewsGrid() {
             const cityData = localNewsDatabase[currentCity];
-            const langData = cityData[currentLang];
-            const layers = cityData.layers[currentLang];
-            const origLang = cityData.originalLangName[currentLang];
+            const layers = cityData.layers[currentLang] || cityData.layers['en']; 
             
-            let filtered = langData.articles.map((art, idx) => ({...art, origIndex: idx}))
+            let filtered = currentLiveArticles.map((art, idx) => ({...art, origIndex: idx}))
                                             .filter(art => currentScope === 'all' || art.scope === currentScope);
 
             const leftFeed = document.getElementById('left-column-feed');
             const centerFeed = document.getElementById('center-column-feed');
+            if (!leftFeed || !centerFeed) return;
             
             let leftHTML = '';
             let centerHTML = '';
 
             if (filtered.length === 0) {
-                centerHTML = `<div class="p-10 text-center text-slate-500 font-heading text-lg">No news in this radius.</div>`;
+                centerHTML = `<div class="p-10 text-center text-slate-500 font-heading text-lg">No news found for this specific filter.</div>`;
             } else {
+                // Левая колонка
                 filtered.slice(0, 4).forEach(art => {
-                    const locLabel = layers[art.scope] ? layers[art.scope].toUpperCase() : '';
                     leftHTML += `
-                        <div class="live-item" onclick="openArticle(${art.origIndex})">
-                            <div class="text-[0.65rem] text-slate-400 uppercase tracking-widest font-semibold mb-1.5">${art.time} • <span class="text-slate-900 dark:text-white">${art.category} | ${locLabel}</span></div>
-                            <div class="live-title text-[0.95rem] font-medium text-slate-800 dark:text-slate-200 transition-colors leading-snug">${art.title}</div>
+                        <div class="flex gap-3 items-start pb-4 border-b border-slate-100 dark:border-darkBorder cursor-pointer group" onclick="openArticle(${art.origIndex}, 'local')">
+                            ${art.image ? `<img src="${art.image}" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&q=90'" class="w-16 h-16 rounded object-cover flex-shrink-0 group-hover:opacity-80 transition-opacity">` : ''}
+                            <div class="flex flex-col">
+                                <span class="text-[0.65rem] text-brandRed font-bold uppercase tracking-widest mb-1">${art.category}</span>
+                                <h4 class="text-[0.85rem] font-bold text-slate-800 dark:text-slate-200 group-hover:underline underline-offset-2 leading-snug">${art.title}</h4>
+                            </div>
                         </div>
                     `;
                 });
 
                 const hero = filtered[0];
-                const heroLocLabel = layers[hero.scope] ? layers[hero.scope].toUpperCase() : '';
-                const heroBadge = `<span class="ai-badge ml-3 shadow-sm"><i class="fa-solid fa-robot mr-1 opacity-70"></i> ${origLang}</span>`;
+                const heroLocLabel = layers[hero.scope] ? layers[hero.scope].toUpperCase() : 'LOCAL';
+                const heroBadge = hero.translated ? `<span class="ai-badge ml-3 shadow-sm" title="AI Translated"><i class="fa-solid fa-language mr-1 opacity-70"></i> ${currentLang.toUpperCase()}</span>` : '';
                 
                 centerHTML += `
-                    <div class="cursor-pointer group flex flex-col gap-4" onclick="openArticle(${hero.origIndex})">
-                        ${hero.image ? `<div class="w-full h-[340px] bg-slate-100 dark:bg-darkBorder overflow-hidden rounded-2xl shadow-sm"><img src="${hero.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"></div>` : ''}
+                    <div class="cursor-pointer group flex flex-col gap-4" onclick="openArticle(${hero.origIndex}, 'local')">
+                        ${hero.image ? `<div class="w-full h-[340px] bg-slate-100 dark:bg-darkBorder overflow-hidden rounded-2xl shadow-sm"><img src="${hero.image}" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1600&q=90'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"></div>` : ''}
                         <div class="flex items-center mt-2">
                             <span class="text-[0.7rem] font-bold text-slate-900 dark:text-white uppercase tracking-widest">${hero.category} | ${heroLocLabel}</span>
                             ${heroBadge}
@@ -1127,12 +1037,12 @@
 
                 if (filtered.length > 1) {
                     centerHTML += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-6">`;
-                    for(let i = 1; i < filtered.length; i++) {
+                    for(let i = 1; i < Math.min(filtered.length, 5); i++) {
                         const sub = filtered[i];
-                        const subLocLabel = layers[sub.scope] ? layers[sub.scope].toUpperCase() : '';
+                        const subLocLabel = layers[sub.scope] ? layers[sub.scope].toUpperCase() : 'LOCAL';
                         centerHTML += `
-                            <div class="cursor-pointer group flex flex-col gap-3" onclick="openArticle(${sub.origIndex})">
-                                ${sub.image ? `<div class="w-full h-[160px] bg-slate-100 dark:bg-darkBorder overflow-hidden rounded-xl shadow-sm"><img src="${sub.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div>` : `<div class="w-full h-[160px] bg-slate-200 dark:bg-darkBorder overflow-hidden rounded-xl shadow-sm flex items-center justify-center text-slate-400"><i class="fa-regular fa-image text-3xl"></i></div>`}
+                            <div class="cursor-pointer group flex flex-col gap-3" onclick="openArticle(${sub.origIndex}, 'local')">
+                                ${sub.image ? `<div class="w-full h-[160px] bg-slate-100 dark:bg-darkBorder overflow-hidden rounded-xl shadow-sm"><img src="${sub.image}" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1200&q=90'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div>` : `<div class="w-full h-[160px] bg-slate-200 dark:bg-darkBorder overflow-hidden rounded-xl shadow-sm flex items-center justify-center text-slate-400"><i class="fa-regular fa-image text-3xl"></i></div>`}
                                 <span class="text-[0.65rem] font-bold text-slate-900 dark:text-white uppercase tracking-widest mt-1">${sub.category} | ${subLocLabel}</span>
                                 <h3 class="main-heading text-lg leading-tight group-hover:underline underline-offset-4 transition-all text-slate-900 dark:text-white">${sub.title}</h3>
                             </div>
@@ -1147,47 +1057,19 @@
         }
 
         function renderSkeletons() {
-            document.getElementById('left-column-feed').innerHTML = `
-                <div class="skeleton h-16 w-full mb-5"></div><div class="skeleton h-16 w-full mb-5"></div>
-            `;
-            document.getElementById('center-column-feed').innerHTML = `
-                <div class="skeleton h-[340px] w-full mb-5 rounded-2xl"></div>
-                <div class="skeleton h-8 w-3/4 mb-3"></div>
-                <div class="skeleton h-4 w-full mb-5"></div>
-            `;
+            const leftFeed = document.getElementById('left-column-feed');
+            const centerFeed = document.getElementById('center-column-feed');
+            if (leftFeed) leftFeed.innerHTML = `<div class="skeleton h-16 w-full mb-5"></div><div class="skeleton h-16 w-full mb-5"></div>`;
+            if (centerFeed) centerFeed.innerHTML = `<div class="skeleton h-[340px] w-full mb-5 rounded-2xl"></div><div class="skeleton h-8 w-3/4 mb-3"></div><div class="skeleton h-4 w-full mb-5"></div>`;
         }
 
-        function renderGlobalNews() {
-            const feed = document.getElementById('global-news-feed');
-            const data = globalNewsDatabase[currentLang];
-            let html = '';
-            data.forEach(article => {
-                html += `
-                    <div class="flex gap-4 items-center pb-5 border-b border-slate-200 dark:border-darkBorder cursor-pointer group">
-                        <div class="w-20 h-16 bg-slate-100 dark:bg-darkBorder flex-shrink-0 overflow-hidden rounded-lg shadow-sm">
-                            <img src="${article.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                        </div>
-                        <div class="flex flex-col gap-1">
-                            <span class="text-[0.65rem] font-bold uppercase tracking-widest text-slate-900 dark:text-white">${article.category}</span>
-                            <h4 class="main-heading text-[0.95rem] leading-snug group-hover:underline underline-offset-4 transition-all text-slate-900 dark:text-white">${article.title}</h4>
-                        </div>
-                    </div>
-                `;
-            });
-            feed.innerHTML = html;
-        }
-
-        // --- РЕНДЕРИНГ БЛОКА "ВЫБОР АВТОРОВ" ---
         function renderAuthorsChoice() {
             const feed = document.getElementById('authors-choice-feed');
+            if (!feed) return;
             const data = authorsChoiceDatabase[currentLang];
             let html = '';
-            
             data.forEach((article, index) => {
-                const onClickAction = `openArticle(${index}, 'author')`;
-                
-                html += `
-                    <div class="min-w-[280px] sm:min-w-[320px] w-[280px] sm:w-[320px] flex-shrink-0 snap-start group cursor-pointer" onclick="${onClickAction}">
+                html += `<div class="min-w-[280px] sm:min-w-[320px] w-[280px] sm:w-[320px] flex-shrink-0 snap-start group cursor-pointer" onclick="openArticle(${index}, 'author')">
                         <div class="w-full h-[180px] relative overflow-hidden mb-4 bg-slate-800 shadow-md rounded-2xl">
                             <img src="${article.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100">
                             <div class="absolute bottom-2 left-2 bg-brandRed text-white text-[0.6rem] font-bold uppercase tracking-widest px-2 py-1 flex items-center gap-1 shadow-sm rounded-sm">
@@ -1197,59 +1079,61 @@
                         <div class="text-[0.65rem] text-slate-400 font-bold uppercase tracking-widest mb-1.5">${article.category} | ${article.loc}</div>
                         <h3 class="main-heading text-white text-lg leading-tight group-hover:underline underline-offset-4 transition-all mb-2">${article.title}</h3>
                         <p class="text-slate-400 text-[0.8rem] leading-relaxed line-clamp-3">${article.excerpt}</p>
-                    </div>
-                `;
+                    </div>`;
             });
-            
             feed.innerHTML = html;
         }
 
         function scrollAuthors(direction) {
-            const container = document.getElementById('authors-choice-feed');
-            const scrollAmount = 340; 
-            container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+            document.getElementById('authors-choice-feed').scrollBy({ left: direction * 340, behavior: 'smooth' });
         }
-
-        // --- ПРОСМОТР СТАТЬИ ---
 
         function openArticle(index, sourceDb = 'local') {
             isArticleView = true;
-            
             if (isCategoriesView) closeCategoriesView(); 
 
-            let article, cityLabel, origLangName;
+            let article, cityLabel, langName;
             const t = translations[currentLang];
 
             if (sourceDb === 'local') {
+                article = currentLiveArticles[index];
                 const cityData = localNewsDatabase[currentCity];
-                const langData = cityData[currentLang];
-                article = langData.articles[index];
-                const layers = cityData.layers[currentLang];
-                cityLabel = layers[article.scope] ? layers[article.scope].toUpperCase() : '';
-                origLangName = cityData.originalLangName[currentLang];
+                const layers = cityData.layers[currentLang] || cityData.layers['en'];
+                cityLabel = layers[article.scope] ? layers[article.scope].toUpperCase() : 'LOCAL';
+                langName = currentLang.toUpperCase(); 
             } else if (sourceDb === 'author') {
                 article = authorsChoiceDatabase[currentLang][index];
                 cityLabel = article.loc.toUpperCase();
-                origLangName = "Author's Original"; 
+                langName = "Original"; 
+            } else if (sourceDb === 'global') {
+                article = currentGlobalArticles[index];
+                cityLabel = "GLOBAL";
+                langName = currentLang.toUpperCase(); 
             }
 
             currentArticleData = article;
             currentArticleText = article.fullText || article.excerpt;
             
             document.getElementById('article-category').innerText = `${article.category} | ${cityLabel}`;
-            document.getElementById('article-translation').innerText = `${t.translatedFrom} ${origLangName}`;
+            document.getElementById('article-translation').innerText = `${t.translatedFrom} ${langName}`;
             document.getElementById('article-title').innerText = article.title;
             
             const sourceLink = document.getElementById('article-source');
             sourceLink.innerText = article.source || "GeoPulse Source";
-            sourceLink.href = article.url || '#';
             
             const readBtn = document.getElementById('read-original-btn');
-            if(readBtn) readBtn.href = article.url || '#';
+            if (article.url) {
+                sourceLink.href = article.url;
+                readBtn.href = article.url;
+                readBtn.classList.remove('hidden');
+            } else {
+                sourceLink.href = '#';
+                readBtn.classList.add('hidden');
+            }
             
             document.getElementById('article-source-img').innerText = article.source || "GeoPulse Source";
             document.getElementById('article-time').innerText = article.time || "Recently";
-            document.getElementById('article-content').innerHTML = article.fullText || `<p>${article.excerpt}</p><p class='text-sm text-slate-400 italic mt-6 bg-slate-50 dark:bg-darkCard p-4 rounded-lg'>[Full text not available in database mock]</p>`;
+            document.getElementById('article-content').innerHTML = article.fullText || `<p>${article.excerpt}</p>`;
 
             const imgContainer = document.getElementById('article-image-container');
             if (article.image) {
@@ -1261,18 +1145,15 @@
 
             const grid = document.getElementById('news-grid');
             const articleView = document.getElementById('article-view');
-
             const authorsSection = document.getElementById('authors-choice-section');
             if (authorsSection) authorsSection.style.display = 'none';
 
-            grid.classList.add('opacity-0', 'translate-y-4');
-            
+            if (grid) grid.classList.add('opacity-0', 'translate-y-4');
             setTimeout(() => {
-                grid.classList.add('hidden');
-                articleView.classList.remove('hidden');
-                
+                if (grid) grid.classList.add('hidden');
+                if (articleView) articleView.classList.remove('hidden');
                 requestAnimationFrame(() => {
-                    articleView.classList.remove('opacity-0', 'translate-y-4');
+                    if (articleView) articleView.classList.remove('opacity-0', 'translate-y-4')
                 });
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }, 400);
@@ -1284,40 +1165,19 @@
             const grid = document.getElementById('news-grid');
             const articleView = document.getElementById('article-view');
 
-            articleView.classList.add('opacity-0', 'translate-y-4');
-            document.getElementById('ai-result-box').classList.add('hidden');
+            if (articleView) articleView.classList.add('opacity-0', 'translate-y-4');
+            const aiBox = document.getElementById('ai-result-box');
+            if (aiBox) aiBox.classList.add('hidden');
             
             setTimeout(() => {
-                articleView.classList.add('hidden');
-                grid.classList.remove('hidden');
+                if (articleView) articleView.classList.add('hidden');
+                if (grid) grid.classList.remove('hidden');
                 const authorsSection = document.getElementById('authors-choice-section');
                 if (authorsSection) authorsSection.style.display = 'block';
-                
                 requestAnimationFrame(() => {
-                    grid.classList.remove('opacity-0', 'translate-y-4');
+                    if (grid) grid.classList.remove('opacity-0', 'translate-y-4')
                 });
             }, 400);
-        }
-
-        // --- GEMINI API ИНТЕГРАЦИЯ ---
-        
-        async function fetchGemini(prompt, systemInstruction) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            const payload = { contents: [{ parts: [{ text: prompt }] }] };
-            if (systemInstruction) payload.systemInstruction = { parts: [{ text: systemInstruction }] };
-
-            let retries = 5; let delay = 1000;
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    const data = await response.json();
-                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response.";
-                } catch (error) {
-                    if (i === retries - 1) return "Error connecting to AI. Check API Key.";
-                    await new Promise(res => setTimeout(res, delay)); delay *= 2;
-                }
-            }
         }
 
         function formatAIResponse(text) {
@@ -1326,53 +1186,97 @@
             return formatted.replace(/\n/g, '<br>');
         }
 
-        async function generateAISummary() {
-            if(!apiKey) return alert("Please insert Gemini API Key in the code first!");
-            const t = translations[currentLang];
+        function getLangStr() {
+            return currentLang === 'en' ? 'English' : (currentLang === 'fi' ? 'Finnish' : 'Russian');
+        }
+
+        function getCleanText() {
+            return currentArticleText.replace(/<[^>]*>?/gm, '');
+        }
+
+        function showAILoading(title, loadingText) {
             const resultBox = document.getElementById('ai-result-box');
             const resultContent = document.getElementById('ai-result-content');
-            
-            document.getElementById('ai-result-title').innerText = t.aiSummaryTitle;
-            resultContent.innerHTML = `<span class="animate-pulse flex items-center gap-2"><i class="fa-solid fa-circle-notch fa-spin text-brandBlue"></i> ${t.aiLoading}</span>`;
-            resultBox.classList.remove('hidden');
+            document.getElementById('ai-result-title').innerText = title;
+            resultContent.innerHTML = `<span class="animate-pulse flex items-center gap-2"><i class="fa-solid fa-circle-notch fa-spin text-brandBlue"></i> ${loadingText}</span>`;
+            if (resultBox) resultBox.classList.remove('hidden');
+        }
 
-            const langStr = currentLang === 'en' ? 'English' : 'Finnish';
-            const cleanText = currentArticleText.replace(/<[^>]*>?/gm, '');
-            const prompt = `Summarize this news into 3 short bullet points. Target language: ${langStr}. Text: "${cleanText}"`;
-            
+        function displayAIResponse(response) {
+            const resultContent = document.getElementById('ai-result-content');
+            if (resultContent) resultContent.innerHTML = formatAIResponse(response);
+        }
+
+        async function generateAISummary() {
+            const t = translations[currentLang];
+            showAILoading(t.aiSummaryTitle, t.aiLoading);
+            const prompt = `Summarize this news into 3 short bullet points. Target language: ${getLangStr()}. Text: "${getCleanText()}"`;
             const response = await fetchGemini(prompt, "You are an expert news editor. Output only bullet points.");
-            resultContent.innerHTML = formatAIResponse(response);
+            displayAIResponse(response);
         }
 
         async function generateAIContext() {
-            if(!apiKey) return alert("Please insert Gemini API Key in the code first!");
             const t = translations[currentLang];
-            const resultBox = document.getElementById('ai-result-box');
-            const resultContent = document.getElementById('ai-result-content');
-            
-            document.getElementById('ai-result-title').innerText = t.aiContextTitle;
-            resultContent.innerHTML = `<span class="animate-pulse flex items-center gap-2"><i class="fa-solid fa-circle-notch fa-spin text-brandBlue"></i> ${t.aiLoading}</span>`;
-            resultBox.classList.remove('hidden');
-
-            const langStr = currentLang === 'en' ? 'English' : 'Finnish';
-            
+            showAILoading(t.aiContextTitle, t.aiLoading);
             const cityData = localNewsDatabase[currentCity];
-            const locName = currentArticleData && currentArticleData.loc ? currentArticleData.loc : cityData[currentLang].cityName;
-            
-            const cleanText = currentArticleText.replace(/<[^>]*>?/gm, '');
-            
-            const prompt = `Analyze this news for an expat or resident living in ${locName}. Briefly explain two things: 1) Why is this happening? 2) Why is this important and how does it affect locals? Keep it strictly to 2-3 sentences. Target language: ${langStr}. Article text: "${cleanText}"`;
-            
+            const locName = currentArticleData && currentArticleData.loc ? currentArticleData.loc : (cityData[currentLang]?.cityName || cityData['en'].cityName);
+            const prompt = `Analyze this news for an expat or resident living in ${locName}. Briefly explain two things: 1) Why is this happening? 2) Why is this important and how does it affect locals? Keep it strictly to 2-3 sentences. Target language: ${getLangStr()}. Article text: "${getCleanText()}"`;
             const response = await fetchGemini(prompt, "You are an expert local analyst. Your goal is to briefly explain the significance and direct impact of local news.");
-            resultContent.innerHTML = formatAIResponse(response);
+            displayAIResponse(response);
         }
 
-        // --- ИНИЦИАЛИЗАЦИЯ ---
+        async function generateAISimplify() {
+            const t = translations[currentLang];
+            showAILoading(t.aiSimplifyTitle, t.aiLoading);
+            const prompt = `Explain the following news article simply and clearly, as if you are explaining it to a middle school student. Focus only on the core message and remove any complex jargon. Target language: ${getLangStr()}. Article: "${getCleanText()}"`;
+            const response = await fetchGemini(prompt, "You are a helpful assistant that simplifies complex news.");
+            displayAIResponse(response);
+        }
+
+        async function generateAIFactCheck() {
+            const t = translations[currentLang];
+            showAILoading(t.aiFactCheckTitle, t.aiLoading);
+            const prompt = `Analyze the following news article. Point out any emotional language, potential bias, and list 1-2 points of context that might be missing from the narrative. Be highly objective. Target language: ${getLangStr()}. Article: "${getCleanText()}"`;
+            const response = await fetchGemini(prompt, "You are an objective media literacy expert analyzing news text.");
+            displayAIResponse(response);
+        }
+
+        async function generateAIChat() {
+            const inputEl = document.getElementById('ai-chat-input');
+            const question = inputEl.value.trim();
+            if (!question) return;
+
+            const t = translations[currentLang];
+            showAILoading(`${t.aiChatTitle}: "${question}"`, t.aiLoading);
+            
+            const prompt = `Based ONLY on the following news article, answer the user's question: "${question}". If the article does not contain the answer, politely state that the information is not provided in the text. Target language: ${getLangStr()}. Article: "${getCleanText()}"`;
+            
+            const response = await fetchGemini(prompt, "You are a helpful assistant answering questions based strictly on the provided text.");
+            displayAIResponse(response);
+            inputEl.value = ''; 
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatInput = document.getElementById('ai-chat-input');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function (e) {
+                    if (e.key === 'Enter') {
+                        generateAIChat();
+                    }
+                });
+            }
+        });
+
+        // Инициализация
         document.addEventListener('DOMContentLoaded', () => {
             const isDark = document.documentElement.classList.contains('dark');
             updateThemeIcon(isDark);
+            
+            currentLang = 'en'; 
+            initCustomCities(); // Загружаем кастомные города в память из LocalStorage
+            
             updateStaticTexts();
-            renderGlobalNews();
+            loadGlobalNews();
             changeLocation('kokkola', true);
         });
     </script>
