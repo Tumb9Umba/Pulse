@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoPulse - Modern Media AI</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Plus Jakarta Sans', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    },
+                    colors: {
+                        darkBg: '#141414',
+                        darkCard: '#1e1e1e',
+                        darkBorder: '#333333',
+                        brandRed: '#e11d48',
+                        brandBlue: '#2563eb'
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    <!-- project styles moved to styles.css -->
+</head>
+<body class="bg-white dark:bg-darkBg text-slate-900 dark:text-slate-100 antialiased min-h-screen flex flex-col font-sans relative">
+
+    <div id="toast" class="fixed top-24 left-1/2 transform -translate-x-1/2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-3 rounded-full shadow-2xl z-50 flex items-center gap-3 transition-all duration-300 opacity-0 pointer-events-none scale-95 font-semibold text-sm">
+        <i class="fa-solid fa-satellite-dish animate-pulse text-brandBlue"></i>
+        <span id="toast-message">Action...</span>
+    </div>
+
+    <!-- Вспомогательная панель (ОРИГИНАЛЬНАЯ) -->
+    <div class="relative z-[60] border-b border-slate-200 dark:border-darkBorder bg-slate-50 dark:bg-darkCard text-[0.75rem] font-medium text-slate-500 dark:text-slate-400 transition-colors">
+        <div class="layout-container h-12 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <span id="date-display">Monday, August 12</span>
+                <span class="opacity-30">|</span>
+                <span id="weather-widget" class="flex items-center gap-1.5 font-semibold">
+                    <i class="fa-solid fa-cloud"></i> <span id="weather-temp">+4°C</span> <span id="weather-city">Location</span>
+                </span>
+            </div>
+            <div class="flex items-center gap-5">
+                <span id="t-apply-author" class="cursor-pointer hover:underline underline-offset-4 uppercase tracking-wider hidden md:inline transition-all text-brandRed font-bold">Apply as Author</span>
+                <span class="cursor-pointer hover:underline underline-offset-4 uppercase tracking-wider hidden sm:inline transition-all">Newsletter</span>
+                <span class="opacity-30 hidden sm:inline">|</span>
+                <span id="t-login" class="cursor-pointer font-bold hover:underline underline-offset-4 transition-all uppercase tracking-wider text-slate-900 dark:text-white">Log in</span>
+                
+                <button onclick="toggleTheme()" class="w-8 h-8 flex items-center justify-center rounded-full border border-slate-300 dark:border-darkBorder bg-white dark:bg-[#252525] hover:bg-slate-100 dark:hover:bg-[#333333] transition-all shadow-sm group ml-1">
+                    <i id="theme-icon" class="fa-solid fa-moon text-[0.75rem] text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors"></i>
+                </button>
+                
+                <div class="relative group cursor-pointer ml-1">
+                    <span id="current-lang-label" class="hover:text-slate-900 dark:hover:text-white transition-colors uppercase font-bold bg-slate-200 dark:bg-[#333333] px-2.5 py-1.5 rounded text-[0.7rem] shadow-sm">EN</span>
+                    <div class="absolute right-0 top-full mt-2 w-36 bg-white dark:bg-darkCard border border-slate-200 dark:border-darkBorder rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden text-left">
+                        <div onclick="setLanguage('en')" class="px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-[#252525] text-slate-900 dark:text-white text-sm transition-colors cursor-pointer">English</div>
+                        <div onclick="setLanguage('fi')" class="px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-[#252525] text-slate-900 dark:text-white text-sm transition-colors cursor-pointer">Suomi</div>
+                        <div onclick="setLanguage('ru')" class="px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-[#252525] text-slate-900 dark:text-white text-sm transition-colors cursor-pointer">Русский</div>
+                        <div class="border-t border-slate-100 dark:border-darkBorder"></div>
+                        <div onclick="showToast(t('addLangToast'))" id="t-add-language" class="px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-[#252525] text-brandBlue dark:text-blue-400 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer">+ Add language</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Главный Умный Header -->
+    <header id="main-header" class="sticky top-0 z-50 bg-white/95 dark:bg-darkBg/95 backdrop-blur-md border-b border-slate-200 dark:border-darkBorder transition-all duration-300">
+        <div id="header-inner" class="layout-container py-4 sm:py-6 transition-all duration-300">
+            <div class="relative flex items-center justify-between w-full h-10">
+                <div id="main-logo" class="font-serif font-black text-3xl lg:text-4xl tracking-tight cursor-pointer transition-all duration-300 z-10 origin-left" onclick="closeArticle()">
+                    GeoPulse<span class="text-brandRed">.</span>
+                </div>
+                
+                <div class="hidden lg:flex absolute left-0 right-0 justify-center pointer-events-none">
+                    <div id="geo-tabs-desktop" class="pointer-events-auto flex items-center gap-8 text-[0.8rem] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                        <!-- Динамические вкладки -->
+                    </div>
+                </div>
+
+                <!-- БЛОК ЛОКАЦИИ (Новый динамический) -->
+                <div id="focus-button-container" class="relative group z-10 transition-all duration-300 origin-right">
+                    <button class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-2 hover:bg-slate-800 dark:hover:bg-slate-200 transition-all shadow-md hover:shadow-lg">
+                        <i class="fa-solid fa-location-dot text-brandRed"></i>
+                        <span id="current-city-main" class="hidden sm:inline uppercase">FOCUS: LOCATION</span>
+                        <span class="sm:hidden uppercase" id="current-city-mobile">LOC</span>
+                        <i class="fa-solid fa-chevron-down text-[0.6rem] sm:text-xs ml-0.5 sm:ml-1 opacity-60"></i>
+                    </button>
+                    <!-- ВЫПАДАЮЩЕЕ МЕНЮ -->
+                    <div class="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-darkCard border border-slate-200 dark:border-darkBorder rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[60] overflow-hidden flex flex-col">
+                        
+                        <!-- Геолокация -->
+                        <div class="p-3 border-b border-slate-200 dark:border-darkBorder bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors flex items-center gap-2 text-brandBlue dark:text-blue-400 font-bold text-xs uppercase" onclick="geolocateUser()">
+                            <i class="fa-solid fa-crosshairs"></i> <span id="t-find-my-loc">Find My Active Location</span>
+                        </div>
+
+                        <!-- Поиск OSM -->
+                        <div class="p-3 bg-slate-50 dark:bg-darkBorder/30 relative">
+                            <input type="text" id="osm-search-input" placeholder="Type city anywhere in the world..." class="w-full bg-white dark:bg-darkBg border border-slate-200 dark:border-darkBorder rounded px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-brandBlue" oninput="debounceOsmSearch()">
+                            <!-- Результаты OSM -->
+                            <div id="osm-results" class="absolute left-0 right-0 top-full mt-1 bg-white dark:bg-darkCard border border-slate-200 dark:border-darkBorder rounded shadow-xl hidden z-50 max-h-48 overflow-y-auto"></div>
+                        </div>
+
+                        <div class="p-2 text-[0.65rem] text-slate-400 font-bold uppercase tracking-wider bg-slate-50 dark:bg-darkBorder/50 flex-shrink-0" id="t-saved-loc">Saved Locations</div>
+                        
+                        <!-- Список -->
+                        <div id="saved-locations-list" class="max-h-60 overflow-y-auto"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="geo-tabs-mobile-wrapper" class="flex lg:hidden overflow-x-auto hide-scrollbar mt-4">
+                <div id="geo-tabs-mobile" class="flex items-center gap-6 text-[0.75rem] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 w-max pb-1"></div>
+            </div>
+
+            <div id="topic-tabs-container" class="w-full overflow-x-auto hide-scrollbar mt-4 transition-all duration-300 opacity-100 max-h-[50px] transform-gpu origin-top">
+                <div class="flex lg:justify-center items-center w-max min-w-full gap-5 lg:gap-8 text-[0.65rem] lg:text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 pb-1">
+                    <div id="topic-tabs" class="flex items-center gap-5 lg:gap-8"></div>
+                    
+                    <!-- ОРИГИНАЛЬНАЯ кнопка Other -->
+                    <div class="cursor-pointer flex-shrink-0" onclick="openCategoriesView()">
+                        <span class="text-[0.65rem] lg:text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 hover:underline underline-offset-4 transition-all flex items-center gap-1.5">
+                            <span id="t-nav-other">Other</span>
+                            <i class="fa-solid fa-chevron-down text-[0.55rem]"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <main class="layout-container flex-grow pb-16 pt-6 relative">
+        <!-- Подсказка: когда город не выбран -->
+        <div id="focus-hint" class="hidden mb-6 border border-slate-200 dark:border-darkBorder bg-white/80 dark:bg-darkCard/70 backdrop-blur-md px-5 py-4 shadow-sm focus-hint-card">
+            <div class="flex items-start gap-4">
+                <div class="mt-0.5 w-10 h-10 rounded-full bg-brandBlue/10 text-brandBlue flex items-center justify-center flex-shrink-0 ring-1 ring-brandBlue/20">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <div class="font-bold text-slate-900 dark:text-white uppercase tracking-widest text-[0.7rem]">CHOOSE A CITY TO UNLOCK LOCAL NEWS</div>
+                    <div class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                        You’re currently seeing <span class="font-semibold">world highlights</span>. Open <span class="font-semibold">FOCUS</span> to search any city, save it, and get the local feed instantly.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="news-grid" class="news-grid feed-transition">
+            
+            <!-- Левая колонка -->
+            <div class="col-left flex flex-col pr-5 sm:pr-6 border-r border-slate-200 dark:border-darkBorder">
+                <div class="border-b-2 border-slate-900 dark:border-white pb-3 mb-5 flex flex-col items-start">
+                    <div class="font-bold text-slate-900 dark:text-white uppercase text-[0.8rem] tracking-wider flex items-center gap-2 mb-1">
+                        <span id="t-local-news">Local News</span>
+                    </div>
+                    <div class="text-[0.6rem] text-slate-400 font-medium flex items-center gap-1.5 uppercase tracking-wide">
+                        <i class="fa-solid fa-robot text-brandBlue opacity-70"></i>
+                        <span id="t-ai-collected">Live Parsed by AI</span>
+                    </div>
+                </div>
+                
+                <div id="left-column-feed" class="flex flex-col gap-4"></div>
+
+                <!-- ОРИГИНАЛЬНЫЙ баннер PRO -->
+                <div class="bg-slate-50 dark:bg-darkCard rounded-2xl p-6 flex flex-col text-center mt-10 border border-slate-200 dark:border-darkBorder shadow-sm">
+                    <span class="font-serif font-black tracking-tight text-xl mb-2 text-slate-900 dark:text-white">GeoPulse <span class="text-brandBlue font-sans italic">PRO</span></span>
+                    <p id="t-pro-desc" class="text-[0.75rem] text-slate-600 dark:text-slate-400 mb-5 leading-relaxed">Detailed analytics of real estate and startup markets for investors.</p>
+                    <button class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs py-2.5 rounded-xl hover:bg-brandBlue dark:hover:bg-brandBlue dark:hover:text-white transition-colors uppercase tracking-wider shadow-sm">Subscribe</button>
+                    <span class="text-[0.6rem] text-slate-400 mt-4 uppercase font-semibold tracking-wider" id="t-dev-mode">Currently in development</span>
+                </div>
+            </div>
+
+            <!-- Центральная колонка -->
+            <div class="col-center flex flex-col pr-8 border-r border-slate-200 dark:border-darkBorder">
+                <div id="center-column-feed" class="flex flex-col"></div>
+            </div>
+
+            <!-- Правая колонка -->
+            <div class="col-right flex flex-col pl-2">
+                <div class="font-bold text-lg border-b-2 border-slate-900 dark:border-white pb-3 mb-6 flex justify-between items-end">
+                    <span id="t-global-title">Global Agenda</span>
+                </div>
+                <div id="global-news-feed" class="flex flex-col gap-5"></div>
+            </div>
+            
+        </div>
+
+        <!-- РЕЖИМ: Просмотр отдельной статьи (С ВОССТАНОВЛЕННЫМ AI-ПАНЕЛЯМИ) -->
+        <div id="article-view" class="hidden flex-col feed-transition opacity-0 translate-y-4 max-w-3xl mx-auto mt-6">
+            <button onclick="closeArticle()" class="self-start text-sm text-slate-500 hover:underline underline-offset-4 flex items-center gap-2 transition-all mb-8 uppercase font-bold tracking-wider bg-slate-100 dark:bg-darkCard px-4 py-2 rounded-full">
+                <i class="fa-solid fa-arrow-left"></i> <span id="t-back">Back to feed</span>
+            </button>
+            
+            <div class="mb-5 flex items-center justify-between">
+                <div class="flex gap-3 items-center">
+                    <span id="article-category" class="text-xs font-bold uppercase tracking-widest text-slate-900 dark:text-white"></span>
+                    <span class="text-slate-300 dark:text-slate-600">•</span>
+                    <span id="article-time" class="text-xs text-slate-500 font-medium"></span>
+                </div>
+                <div class="bg-brandBlue/10 text-brandBlue dark:text-blue-400 text-[10px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 uppercase tracking-wide">
+                    <i class="fa-solid fa-robot"></i> <span id="article-translation">Live Parsed</span>
+                </div>
+            </div>
+            
+            <h1 id="article-title" class="main-heading text-4xl sm:text-5xl lg:text-5xl text-slate-900 dark:text-white mb-6 leading-tight"></h1>
+            
+            <div id="article-image-container" class="w-full h-[400px] sm:h-[450px] mb-10 relative bg-slate-100 dark:bg-darkCard rounded-2xl overflow-hidden hidden shadow-sm">
+                <img id="article-image" src="" alt="Cover" class="w-full h-full object-cover">
+                <div class="absolute bottom-3 right-3 text-[10px] bg-slate-900/80 backdrop-blur-sm text-white px-3 py-1.5 rounded-md uppercase font-semibold tracking-wide">Source: <span id="article-source-img"></span></div>
+            </div>
+
+            <!-- ВОССТАНОВЛЕННАЯ ПАНЕЛЬ AI -->
+            <div class="border border-slate-200 dark:border-darkBorder rounded-2xl p-5 mb-10 flex flex-col gap-5 bg-slate-50/50 dark:bg-darkCard/50 shadow-sm">
+                <div class="flex flex-wrap items-center gap-3">
+                    <span class="text-xs font-bold text-slate-500 uppercase mr-2 tracking-wide flex items-center"><i class="fa-solid fa-wand-magic-sparkles mr-2 text-amber-500"></i> AI Tools:</span>
+                    <button onclick="generateAISummary()" class="text-sm font-semibold bg-white dark:bg-darkBg border border-slate-200 dark:border-darkBorder px-4 py-2 rounded-xl hover:border-brandBlue hover:text-brandBlue transition-all flex items-center gap-2 shadow-sm">
+                        ✨ <span id="t-ai-summary">AI Summary</span>
+                    </button>
+                    <button onclick="generateAIContext()" class="text-sm font-semibold bg-white dark:bg-darkBg border border-slate-200 dark:border-darkBorder px-4 py-2 rounded-xl hover:border-brandBlue hover:text-brandBlue transition-all flex items-center gap-2 shadow-sm">
+                        📍 <span id="t-ai-context">Local Context</span>
+                    </button>
+                    <button onclick="generateAISimplify()" class="text-sm font-semibold bg-white dark:bg-darkBg border border-slate-200 dark:border-darkBorder px-4 py-2 rounded-xl hover:border-brandBlue hover:text-brandBlue transition-all flex items-center gap-2 shadow-sm">
+                        👶 <span id="t-ai-simplify">Simplify</span>
+                    </button>
+                    <button onclick="generateAIFactCheck()" class="text-sm font-semibold bg-white dark:bg-darkBg border border-slate-200 dark:border-darkBorder px-4 py-2 rounded-xl hover:border-brandBlue hover:text-brandBlue transition-all flex items-center gap-2 shadow-sm">
+                        ⚖️ <span id="t-ai-factcheck">Fact Check</span>
+                    </button>
+                </div>
+                
+                <div class="flex items-center gap-2 pt-4 border-t border-slate-200 dark:border-darkBorder">
+                    <input type="text" id="ai-chat-input" placeholder="Ask AI a specific question about this article..." class="flex-grow bg-white dark:bg-darkBg border border-slate-200 dark:border-darkBorder px-4 py-2.5 rounded-xl text-sm outline-none focus:border-brandBlue transition-colors text-slate-800 dark:text-slate-200">
+                    <button onclick="generateAIChat()" class="text-sm font-semibold bg-brandBlue text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition-all shadow-sm flex items-center gap-2">
+                        ✨ <span id="t-ai-ask">Ask</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="ai-result-box" class="hidden mb-10 p-6 rounded-2xl border-l-4 border-brandBlue bg-blue-50 dark:bg-darkBorder/40 shadow-sm">
+                <h4 class="font-bold text-sm mb-3 flex items-center gap-2 text-brandBlue uppercase tracking-wider">
+                    <i class="fa-solid fa-robot"></i> <span id="ai-result-title">AI Insight</span>
+                </h4>
+                <div id="ai-result-content" class="text-[0.95rem] text-slate-800 dark:text-slate-200 space-y-3 leading-relaxed"></div>
+            </div>
+
+            <div id="article-content" class="font-sans font-normal text-lg text-slate-800 dark:text-slate-300 leading-relaxed space-y-6"></div>
+            
+            <div class="mt-14 pt-8 border-t border-slate-200 dark:border-darkBorder flex justify-between items-center text-xs uppercase font-bold text-slate-500 tracking-wide">
+                <div>Original Source: <span id="article-source" class="text-slate-900 dark:text-white font-bold ml-1"></span></div>
+                <a href="#" id="read-original-btn" target="_blank" class="bg-slate-100 dark:bg-darkCard px-5 py-2.5 rounded-full hover:bg-slate-200 dark:hover:bg-darkBorder transition-all text-slate-900 dark:text-white flex items-center hidden">
+                    <i class="fa-solid fa-external-link-alt mr-1.5"></i> <span id="t-read-original">Read</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- ОРИГИНАЛЬНЫЙ РЕЖИМ: Просмотр Всех Категорий -->
+        <div id="categories-view" class="hidden flex-col feed-transition opacity-0 translate-y-4 w-full mt-6 pb-20">
+            <div class="max-w-5xl mx-auto w-full">
+                <button onclick="closeCategoriesView()" class="self-start text-sm text-slate-500 hover:underline underline-offset-4 flex items-center gap-2 transition-all mb-8 uppercase font-bold tracking-wider bg-slate-100 dark:bg-darkCard px-4 py-2 rounded-full">
+                    <i class="fa-solid fa-arrow-left"></i> <span id="t-back-from-cat">Back to feed</span>
+                </button>
+                <h1 class="main-heading text-4xl sm:text-5xl text-slate-900 dark:text-white mb-10 leading-tight border-b border-slate-200 dark:border-darkBorder pb-6" id="t-all-categories-title">All Categories</h1>
+                <div id="full-categories-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ОРИГИНАЛЬНЫЙ БЛОК: Выбор Авторов -->
+    <section id="authors-choice-section" class="bg-darkBg py-12 border-t border-darkBorder mt-auto">
+        <div class="layout-container">
+            <div class="flex items-center justify-between border-b border-darkBorder pb-4 mb-6">
+                <h2 class="text-white font-bold text-lg sm:text-xl uppercase tracking-widest flex items-center group cursor-pointer hover:underline underline-offset-8 transition-all">
+                    <span id="t-authors-choice">GeoPulse Authors' Choice</span>
+                    <i class="fa-solid fa-chevron-right ml-2 text-brandRed group-hover  :translate-x-1 transition-transform text-sm"></i>
+                </h2>
+                <div class="flex gap-2">
+                    <button onclick="scrollAuthors(-1)" class="w-8 h-8 rounded-full bg-darkCard hover:bg-slate-800 text-white flex items-center justify-center transition-colors shadow-sm"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                    <button onclick="scrollAuthors(1)" class="w-8 h-8 rounded-full bg-darkCard hover:bg-slate-800 text-white flex items-center justify-center transition-colors shadow-sm"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                </div>
+            </div>
+            <div id="authors-choice-feed" class="flex gap-6 overflow-x-auto hide-scrollbar snap-x pb-4 scroll-smooth"></div>
+        </div>
+    </section>
+
+    <!-- NEW: World & more stories after Authors' Choice -->
+    <section id="after-authors-world-section" class="bg-darkBg py-12 border-t border-darkBorder">
+        <div class="layout-container">
+            <div class="flex items-center justify-between border-b border-darkBorder pb-4 mb-6">
+                <h2 class="text-white font-bold text-lg sm:text-xl uppercase tracking-widest flex items-center">
+                    World Stories
+                </h2>
+                <div class="text-[0.7rem] text-slate-400 uppercase font-bold tracking-widest">Global</div>
+            </div>
+            <div id="world-stories-feed" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        </div>
+    </section>
+
+    <section id="after-authors-more-section" class="bg-white dark:bg-darkBg py-12 border-t border-slate-200 dark:border-darkBorder">
+        <div class="layout-container">
+            <div class="flex items-center justify-between border-b border-slate-200 dark:border-darkBorder pb-4 mb-6">
+                <h2 class="text-slate-900 dark:text-white font-bold text-lg sm:text-xl uppercase tracking-widest flex items-center">
+                    More Stories
+                </h2>
+                <div class="text-[0.7rem] text-slate-500 uppercase font-bold tracking-widest">Mixed</div>
+            </div>
+            <div id="more-stories-feed" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        </div>
+    </section>
+
+    <!-- ОРИГИНАЛЬНЫЙ ПОДВАЛ (Footer) -->
+    <footer class="border-t border-slate-200 dark:border-darkBorder bg-white dark:bg-darkBg pt-10 pb-16">
+        <div class="layout-container flex flex-col gap-6 text-sm">
+            <div class="font-serif font-black text-3xl tracking-tight text-slate-900 dark:text-white">GeoPulse<span class="text-brandRed">.</span></div>
+            <div class="flex flex-wrap gap-x-6 gap-y-3 font-bold text-slate-900 dark:text-white text-[0.9rem]">
+                <a href="#" class="hover:underline underline-offset-4 transition-all">Home</a>
+                <a href="#" class="hover:underline underline-offset-4 transition-all">News</a>
+                <a href="#" class="hover:underline underline-offset-4 transition-all">Local Pulse</a>
+                <a href="#" class="hover:underline underline-offset-4 transition-all">Business</a>
+                <a href="#" class="hover:underline underline-offset-4 transition-all">Technology</a>
+                <a href="#" class="hover:underline underline-offset-4 transition-all">Health</a>
+                <a href="#" class="hover:underline underline-offset-4 transition-all">Culture</a>
+                <a href="#" class="hover:underline underline-offset-4 transition-all">Travel</a>
+                <a href="#" class="hover:underline underline-offset-4 transition-all">Earth</a>
+                <a href="#" class="hover:underline underline-offset-4 transition-all">Live</a>
+                <a href="#" class="hover:underline underline-offset-4 transition-all">Weather</a>
+            </div>
+            <div class="border-t border-slate-200 dark:border-darkBorder my-4"></div>
+            <div class="flex items-center gap-5 font-bold text-slate-900 dark:text-white">
+                <span class="mr-2">Follow GeoPulse on:</span>
+                <a href="#" class="text-xl hover:opacity-75 transition-all"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="#" class="text-xl hover:opacity-75 transition-all"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#" class="text-xl hover:opacity-75 transition-all"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="text-xl hover:opacity-75 transition-all"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="#" class="text-xl hover:opacity-75 transition-all"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="#" class="text-xl hover:opacity-75 transition-all"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+            <div class="flex flex-wrap gap-x-5 gap-y-3 text-xs text-slate-700 dark:text-slate-400 font-medium mt-2">
+                <a href="#" class="hover:underline underline-offset-4">Terms of Use</a>
+                <a href="#" class="hover:underline underline-offset-4">Subscription Terms</a>
+                <a href="#" class="hover:underline underline-offset-4">About GeoPulse</a>
+                <a href="#" class="hover:underline underline-offset-4">Privacy Policy</a>
+                <a href="#" class="hover:underline underline-offset-4">Cookies</a>
+                <a href="#" class="hover:underline underline-offset-4">Accessibility Help</a>
+                <a href="#" class="hover:underline underline-offset-4">Contact the GeoPulse</a>
+                <a href="#" class="hover:underline underline-offset-4">Advertise with us</a>
+                <a href="#" class="hover:underline underline-offset-4">Do not share or sell my info</a>
+            </div>
+            <div class="text-xs text-slate-500 dark:text-slate-500 mt-2 leading-relaxed">
+                Copyright 2026 GeoPulse. All rights reserved. The GeoPulse is not responsible for the content of external sites. 
+                <a href="#" class="font-bold text-slate-900 dark:text-white hover:underline underline-offset-4 ml-1">Read about our approach to external linking.</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
