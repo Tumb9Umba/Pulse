@@ -15,17 +15,22 @@ const PORT = 3000;
 dotenv.config({ path: path.join(__dirname, 'gk.env') });
 app.use(express.json({ limit: '1mb' }));
 
-// Инициализируем парсер RSS с жестким тайм-аутом
+// --- ФЕЙКОВЫЙ USER-AGENT ДЛЯ ОБХОДА БЛОКИРОВОК CLOUDFLARE И GOOGLE ---
+const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
+
+// Инициализируем парсер RSS с заголовками реального браузера
 const parser = new Parser({
-    timeout: 8000, // Ждем максимум 8 секунд. Если Google тупит - пропускаем
+    timeout: 8000, 
+    headers: {
+        'User-Agent': USER_AGENT,
+        'Accept': 'application/rss+xml, application/xml, text/xml; q=0.1'
+    },
     customFields: {
         item: ['media:content', 'enclosure', 'content:encoded', 'description'],
     }
 });
 
 app.use(cors());
-
-// Указываем серверу раздавать статические файлы (включая index.html) из текущей папки
 app.use(express.static(__dirname));
 
 // --- DB / CACHE ---
@@ -91,7 +96,15 @@ async function fetchWithTimeout(url, { timeoutMs = 8000 } = {}) {
   const controller = new AbortController();
   const t = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    return await fetch(url, { redirect: 'follow', signal: controller.signal, headers: { 'User-Agent': 'GeoPulseBot/1.0' } });
+    return await fetch(url, { 
+        redirect: 'follow', 
+        signal: controller.signal, 
+        headers: { 
+            'User-Agent': USER_AGENT,
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5'
+        } 
+    });
   } finally {
     clearTimeout(t);
   }
@@ -100,7 +113,7 @@ async function fetchWithTimeout(url, { timeoutMs = 8000 } = {}) {
 async function enrichFromArticlePage(articleUrl) {
   if (!articleUrl || articleUrl === '#') return { image: '', summary: '', contentText: '', contentHtml: '' };
   try {
-    const res = await fetchWithTimeout(articleUrl, { timeoutMs: 8000 });
+    const res = await fetchWithTimeout(articleUrl, { timeoutMs: 6000 });
     if (!res.ok) return { image: '', summary: '', contentText: '', contentHtml: '' };
     const html = await res.text();
     const $ = cheerio.load(html);
@@ -116,7 +129,6 @@ async function enrichFromArticlePage(articleUrl) {
       $('meta[name="description"]').attr('content') ||
       '';
 
-    // Простой экстрактор текста: первые 2–3 осмысленных абзаца
     const paras = [];
     $('article p, main p, .article p, .content p, p').each((_, el) => {
       if (paras.length >= 5) return;
@@ -147,18 +159,26 @@ function escapeHtml(str) {
     .replaceAll("'", '&#039;');
 }
 
-// Функция для авто-категоризации новостей
 function categorizeArticle(title, description) {
     const text = (title + " " + description).toLowerCase();
-    
     if (text.match(/market|economy|business|bank|stock|finance|invest|inflation|бизнес|экономика|рынок|акции/)) return "Business";
     if (text.match(/tech|software|apple|google|ai|startup|cyber|app|технологии|ии|стартап/)) return "Technology";
     if (text.match(/health|medical|doctor|hospital|disease|virus|medicine|здоровье|врач|больница|медицина/)) return "Health";
     if (text.match(/sport|football|basketball|olympics|tennis|спорт|футбол|теннис/)) return "Sport";
     if (text.match(/art|movie|music|culture|festival|film|искусство|кино|музыка|культура/)) return "Culture";
     if (text.match(/war|military|conflict|army|война|армия|конфликт/)) return "Conflicts";
-    
     return "News"; 
+}
+
+// Вспомогательная функция для пакетной обработки промисов, чтобы не DDoSit'ь сайты
+async function processInBatches(items, batchSize, asyncFn) {
+    const results = [];
+    for (let i = 0; i < items.length; i += batchSize) {
+        const batch = items.slice(i, i + batchSize);
+        const batchResults = await Promise.all(batch.map(asyncFn));
+        results.push(...batchResults);
+    }
+    return results;
 }
 
 // Функция для парсинга
@@ -169,9 +189,8 @@ async function fetchRssForScope(query, scope) {
     
     try {
         const feed = await parser.parseURL(url);
-        const items = feed.items.slice(0, 18);
+        const items = feed.items.slice(0, 15); // Немного уменьшили лимит для скорости
 
-        // Базовые поля из RSS
         const base = items.map((item) => {
           let imageUrl = '';
           if (item['media:content'] && item['media:content']['$'] && item['media:content']['$'].url) {
@@ -203,42 +222,33 @@ async function fetchRssForScope(query, scope) {
           };
         });
 
-        // Улучшение: подтягиваем OG:image + пару абзацев (без фанатизма по времени)
-        const enriched = await Promise.all(
-          base.map(async (a) => {
+        // Обрабатываем батчами по 5 штук за раз, чтобы не ловить таймауты
+        const enriched = await processInBatches(base, 5, async (a) => {
             const extra = await enrichFromArticlePage(a.url);
             const image = extra.image || a.image || '';
             const summary = extra.summary || a.excerpt || '';
             const contentText = extra.contentText || a.contentText || '';
             const contentHtml = extra.contentHtml || a.contentHtml || '';
             return { ...a, image, summary, contentText, contentHtml };
-          })
-        );
+        });
 
         return enriched;
     } catch (error) {
-        console.error(`Ошибка парсинга для ${query}:`, error.message);
+        console.error(`[ERROR] Ошибка парсинга для ${query}:`, error.message);
         return [];
     }
 }
 
 function loadCachedArticles(cacheKey) {
-  const rows = db
-    .prepare(
+  return db.prepare(
       `SELECT scope, category, title, excerpt, summary, contentHtml, contentText, source, time, pubDate, image, url, fetchedAt
-       FROM articles
-       WHERE cacheKey = ?
-       ORDER BY fetchedAt DESC, id DESC
-       LIMIT 40`
-    )
-    .all(cacheKey);
-  return rows;
+       FROM articles WHERE cacheKey = ? ORDER BY fetchedAt DESC, id DESC LIMIT 40`
+    ).all(cacheKey);
 }
 
 function isFresh(rows) {
   if (!rows || rows.length === 0) return false;
-  const fetchedAt = rows[0].fetchedAt || 0;
-  return nowMs() - fetchedAt < TTL_MS;
+  return nowMs() - (rows[0].fetchedAt || 0) < TTL_MS;
 }
 
 function replaceCache(cacheKey, articles) {
@@ -247,26 +257,16 @@ function replaceCache(cacheKey, articles) {
     const ins = db.prepare(
       `INSERT INTO articles
        (cacheKey, scope, category, title, excerpt, summary, contentHtml, contentText, source, time, pubDate, image, url, fetchedAt)
-       VALUES
-       (@cacheKey, @scope, @category, @title, @excerpt, @summary, @contentHtml, @contentText, @source, @time, @pubDate, @image, @url, @fetchedAt)`
+       VALUES (@cacheKey, @scope, @category, @title, @excerpt, @summary, @contentHtml, @contentText, @source, @time, @pubDate, @image, @url, @fetchedAt)`
     );
     const fetchedAt = nowMs();
     for (const a of articles) {
       ins.run({
-        cacheKey,
-        scope: a.scope,
-        category: a.category,
-        title: a.title,
-        excerpt: a.excerpt || '',
-        summary: a.summary || '',
-        contentHtml: a.contentHtml || '',
-        contentText: a.contentText || '',
-        source: a.source || '',
-        time: a.time || '',
-        pubDate: a.pubDate || '',
-        image: a.image || '',
-        url: a.url || '',
-        fetchedAt
+        cacheKey, scope: a.scope, category: a.category, title: a.title,
+        excerpt: a.excerpt || '', summary: a.summary || '',
+        contentHtml: a.contentHtml || '', contentText: a.contentText || '',
+        source: a.source || '', time: a.time || '', pubDate: a.pubDate || '',
+        image: a.image || '', url: a.url || '', fetchedAt
       });
     }
   });
@@ -301,14 +301,12 @@ async function getArticlesFast({ city, region, country }) {
   if (isFresh(cached)) return cached;
 
   if (cached.length > 0) {
-    // Есть старые данные — отдаем сразу, а обновление делаем в фоне
     refreshCacheForRequest({ city, region, country })
       .then((articles) => replaceCache(cacheKey, articles))
-      .catch(() => {});
+      .catch((e) => console.error("Фоновое обновление не удалось:", e.message));
     return cached;
   }
 
-  // Первичная загрузка — ждем один раз
   const fresh = await refreshCacheForRequest({ city, region, country });
   replaceCache(cacheKey, fresh);
   return loadCachedArticles(cacheKey);
@@ -321,29 +319,27 @@ function normalizeQuery(req) {
   return { city, region, country };
 }
 
-// API Эндпоинты новостей
 app.get('/api/news', async (req, res) => {
   const { city, region, country } = normalizeQuery(req);
   if (!city && !country) return res.status(400).json({ error: 'Необходимо указать хотя бы город или страну' });
 
-  console.log(`Запрос новостей (cache): city=${city} region=${region} country=${country}`);
+  console.log(`Запрос новостей: city=${city} region=${region} country=${country}`);
   try {
     const rows = await getArticlesFast({ city, region, country });
     res.json({ articles: rows });
   } catch (error) {
-    console.error('Критическая ошибка:', error);
+    console.error('Критическая ошибка /api/news:', error);
     res.status(500).json({ error: 'Внутренняя ошибка сервера' });
   }
 });
 
-// Совместимость с промптом: /api/news/{city}
 app.get('/api/news/:city', async (req, res) => {
   const city = (req.params.city || '').trim();
   try {
     const rows = await getArticlesFast({ city, region: '', country: '' });
     res.json({ articles: rows });
   } catch (error) {
-    console.error('Критическая ошибка:', error);
+    console.error('Критическая ошибка /api/news/:city:', error);
     res.status(500).json({ error: 'Внутренняя ошибка сервера' });
   }
 });
@@ -401,7 +397,6 @@ app.post('/api/ai/generate', async (req, res) => {
   }
 });
 
-// Фоновое обновление кэша раз в 10 минут (по недавно запрошенным ключам)
 cron.schedule('*/10 * * * *', async () => {
   const keys = Array.from(recentCacheKeys);
   if (keys.length === 0) return;
@@ -420,7 +415,6 @@ cron.schedule('*/10 * * * *', async () => {
   }
 });
 
-// Маршрут для главной страницы (Отдает index.html)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
